@@ -7,6 +7,7 @@ credential checks) live in the service layer.
 from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 
 from app.i18n import SUPPORTED_LANGUAGES
+from app.models import MuscleGroup
 
 _MIN_PASSWORD_LENGTH = 8
 
@@ -43,6 +44,19 @@ class ProfileForm(BaseModel):
     @classmethod
     def _known_language(cls, value: str) -> str:
         return value if value in SUPPORTED_LANGUAGES else "en"
+
+
+class ExerciseForm(BaseModel):
+    name: str = Field(min_length=1, max_length=120)
+    muscle_group: MuscleGroup = MuscleGroup.OTHER
+    notes: str = Field(default="", max_length=2000)
+
+    @field_validator("muscle_group", mode="before")
+    @classmethod
+    def _coerce_muscle_group(cls, value: object) -> object:
+        if isinstance(value, str) and value not in MuscleGroup._value2member_map_:
+            return MuscleGroup.OTHER
+        return value
 
 
 class PasswordChangeForm(BaseModel):

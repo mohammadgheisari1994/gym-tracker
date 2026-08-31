@@ -203,17 +203,20 @@ a:hover {
 }
 
 .stacked-form input,
-.stacked-form select {
+.stacked-form select,
+.stacked-form textarea {
   padding: 0.6rem 0.7rem;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
   font: inherit;
+  resize: vertical;
 }
 
 .stacked-form input:focus,
-.stacked-form select:focus {
+.stacked-form select:focus,
+.stacked-form textarea:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
@@ -297,4 +300,82 @@ a:hover {
   margin-top: 0.35rem;
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+.stack-page {
+  padding: 2rem 0;
+}
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-head h1 {
+  margin: 0;
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.card-row-main {
+  min-width: 0;
+}
+
+.card-row-title {
+  font-weight: 600;
+}
+
+.card-row-note {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.card-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+.card-row-actions form {
+  margin: 0;
+}
+
+.badge {
+  display: inline-block;
+  margin-inline-start: 0.5rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+
+.linklike.danger {
+  color: #ff8a8a;
 }

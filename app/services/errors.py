@@ -15,3 +15,11 @@ class EmailAlreadyRegistered(ServiceError):
 
 class InvalidCredentials(ServiceError):
     pass
+
+
+class ResourceNotFound(ServiceError):
+    """A requested row does not exist, or is not owned by the acting user."""
+
+
+class DuplicateExercise(ServiceError):
+    pass
