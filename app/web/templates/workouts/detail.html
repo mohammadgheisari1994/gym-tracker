@@ -116,4 +116,25 @@
     {% endif %}
   </div>
 </section>
+
+<div class="rest-timer" id="rest-timer"
+     data-default="{{ current_user.default_rest_seconds }}"
+     data-labels="{{ {'start': t('timer.start'), 'pause': t('timer.pause')} | tojson }}">
+  <span class="rest-timer-label">{{ t('timer.title') }}</span>
+  <button type="button" data-rest="adjust" data-delta="-30" aria-label="{{ t('timer.minus') }}">
+    &minus;30
+  </button>
+  <span class="rest-time" id="rest-time">--:--</span>
+  <button type="button" data-rest="adjust" data-delta="30" aria-label="{{ t('timer.plus') }}">
+    +30
+  </button>
+  <button type="button" data-rest="toggle" id="rest-toggle" class="rest-primary">
+    {{ t('timer.start') }}
+  </button>
+  <button type="button" data-rest="reset">{{ t('timer.reset') }}</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/rest-timer.js') }}"></script>
 {% endblock %}

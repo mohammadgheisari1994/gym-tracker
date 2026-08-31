@@ -58,10 +58,12 @@ def update_profile(
     display_name: str,
     preferred_language: str,
     weight_unit: WeightUnit,
+    default_rest_seconds: int,
 ) -> User:
     user.display_name = display_name.strip()
     user.preferred_language = normalize_language(preferred_language)
     user.weight_unit = weight_unit
+    user.default_rest_seconds = default_rest_seconds
     session.add(user)
     return user
 

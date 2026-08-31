@@ -45,8 +45,16 @@
   "auth.field.new_password": "New password",
   "auth.field.new_password_confirm": "Confirm new password",
   "auth.field.weight_unit": "Weight unit",
+  "auth.field.default_rest": "Default rest (seconds)",
   "weight_unit.kg": "Kilograms (kg)",
   "weight_unit.lb": "Pounds (lb)",
+
+  "timer.title": "Rest",
+  "timer.start": "Start",
+  "timer.pause": "Pause",
+  "timer.reset": "Reset",
+  "timer.minus": "Subtract 30 seconds",
+  "timer.plus": "Add 30 seconds",
 
   "auth.error.generic": "Please check the highlighted fields and try again.",
   "auth.error.email_invalid": "Enter a valid email address.",

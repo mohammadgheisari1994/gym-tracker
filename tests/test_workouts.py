@@ -210,17 +210,32 @@ def test_exercise_used_in_workout_cannot_be_deleted(auth_client: TestClient) -> 
         assert session.query(Exercise).count() == 1
 
 
-def test_profile_weight_unit_round_trips(auth_client: TestClient) -> None:
+def test_profile_settings_round_trip_and_clamp(auth_client: TestClient) -> None:
     auth_client.post(
         "/profile",
         data={
             "display_name": "Test User",
             "preferred_language": "en",
             "weight_unit": "lb",
+            "default_rest_seconds": "5000",  # out of range -> clamped to 600
         },
         follow_redirects=False,
     )
     from app.models import User
 
     with SessionLocal() as session:
-        assert session.query(User).one().weight_unit.value == "lb"
+        user = session.query(User).one()
+        assert user.weight_unit.value == "lb"
+        assert user.default_rest_seconds == 600
+
+
+def test_workout_page_has_rest_timer(auth_client: TestClient) -> None:
+    resp = auth_client.post(
+        "/workouts",
+        data={"performed_on": "2026-08-30", "title": "", "notes": ""},
+        follow_redirects=False,
+    )
+    page = auth_client.get(resp.headers["location"])
+    assert 'id="rest-timer"' in page.text
+    assert 'data-default="120"' in page.text
+    assert "js/rest-timer.js" in page.text

@@ -45,8 +45,16 @@
   "auth.field.new_password": "گذرواژه جدید",
   "auth.field.new_password_confirm": "تکرار گذرواژه جدید",
   "auth.field.weight_unit": "واحد وزن",
+  "auth.field.default_rest": "استراحت پیش‌فرض (ثانیه)",
   "weight_unit.kg": "کیلوگرم (kg)",
   "weight_unit.lb": "پوند (lb)",
+
+  "timer.title": "استراحت",
+  "timer.start": "شروع",
+  "timer.pause": "توقف",
+  "timer.reset": "بازنشانی",
+  "timer.minus": "کم‌کردن ۳۰ ثانیه",
+  "timer.plus": "افزودن ۳۰ ثانیه",
 
   "auth.error.generic": "لطفاً فیلدهای مشخص‌شده را بررسی کنید و دوباره تلاش کنید.",
   "auth.error.email_invalid": "یک ایمیل معتبر وارد کنید.",
