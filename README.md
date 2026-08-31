@@ -6,23 +6,28 @@ timer, automated exercise form guides, and instructional videos.
 Built with **FastAPI + HTMX + Jinja2**, backed by **PostgreSQL**, deployed on
 **Render**. English-first UI with a Persian (Farsi) RTL option.
 
-> Status: early development. See the
-> [milestones](https://github.com/mohammadgheisari1994/gym-tracker/milestones)
-> for the roadmap.
+## Features
 
-## Features (planned)
-
-- Secure per-user accounts with fully isolated data.
-- Dynamic exercise, set, weight, and rep management with reordering.
-- Set tagging: normal, drop set, super set, warm-up, failure.
-- Per-exercise progress charts (weight / volume / reps over time).
-- Overall analytics: volume load, workout frequency, muscle-group distribution.
-- Estimated 1RM (Epley) plotted on progress charts.
-- Adjustable rest timer between sets.
-- CSV / JSON export of workout history.
-- Optional instructional video fetched per exercise.
-- Automated, cached exercise form guides and performance insights via free LLM
-  providers (no manual prompting).
+- **Accounts** — sign up / log in / profile, argon2-hashed passwords,
+  signed-cookie sessions. Every query is scoped to the signed-in user.
+- **Exercise catalogue** — your own list of movements, each with a muscle
+  group and notes.
+- **Workout logging** — sessions of exercises and sets (weight, reps, RPE),
+  set tags (normal / warm-up / drop / super / failure) with colour badges,
+  reorder exercises and sets, add-set form pre-filled from your last set.
+- **Analytics** — dashboard charts for weekly volume load, workout frequency,
+  and muscle-group distribution; per-exercise progress charts for top weight,
+  volume, reps, and estimated 1RM.
+- **Estimated 1RM** — Epley formula, plotted alongside top weight.
+- **Rest timer** — floating countdown on the workout page, adjustable, with a
+  tone at zero; per-user default duration.
+- **Data export** — full workout history as CSV (one row per set) or JSON.
+- **LLM features** (opt-in, off by default) — a cached execution guide per
+  exercise, a textual performance-insight summary, and a daily motivational
+  line. Prompts are built from your own data; the user never types one.
+- **Instructional videos** — embedded from YouTube (primarily Jeff Nippard),
+  auto-matched for common lifts, never downloaded.
+- **Internationalised** — English and Persian (RTL) throughout.
 
 ## Local development
 
@@ -42,27 +47,43 @@ docker compose run --rm app ruff check .
 docker compose run --rm app pytest
 ```
 
+## Enabling the LLM features
+
+Set an LLM provider in the environment (see `.env.example`). Free options:
+
+| Provider | Config |
+| --- | --- |
+| Groq | `LLM_PROVIDER=groq`, `LLM_API_KEY=...` |
+| Any OpenAI-compatible endpoint (OpenRouter, Cerebras, Gemini) | `LLM_PROVIDER=openai`, `LLM_BASE_URL=...`, `LLM_API_KEY=...`, `LLM_MODEL=...` |
+| Self-hosted Ollama | `LLM_PROVIDER=ollama`, `LLM_BASE_URL=http://host:11434` |
+
+With `LLM_PROVIDER=none` (the default) the app makes no external calls and the
+LLM sections show a plain "unavailable" notice.
+
+## Deployment
+
+`render.yaml` is a Render Blueprint: a free web service plus a free PostgreSQL
+database. Connect the repository in the Render dashboard to deploy; add the
+`LLM_*` variables there if you want the AI features.
+
 ## Project layout
 
 ```
 app/
-  main.py          FastAPI application factory
-  config.py        Settings loaded from the environment
-  database.py      SQLAlchemy engine and session
-  models/          ORM models
-  security/        Password hashing
-  services/        Use-case logic (auth, and later workout tracking)
-  web/             Routes, templates, forms, static assets
-  i18n/            Translation catalogues (en, fa)
-migrations/        Alembic migrations
-tests/             Pytest suite
+  main.py            FastAPI application factory
+  config.py          Settings loaded from the environment
+  database.py        SQLAlchemy engine and session
+  models/            ORM models
+  security/          Password hashing
+  services/          Use-case logic (one module per feature)
+  llm/               LLM provider abstraction
+  references/        Curated, verified citation catalogue
+  exercise_videos/   Curated exercise -> video seed
+  web/               Routes, templates, forms, static assets
+  i18n/              Translation catalogues (en, fa)
+migrations/          Alembic migrations
+tests/               Pytest suite
 ```
-
-## What works today
-
-Accounts (sign up, log in, profile, password change) with argon2-hashed
-passwords and signed-cookie sessions. Every future feature scopes its data to
-the signed-in user. Workout tracking is next.
 
 ## Contributing
 
@@ -72,9 +93,12 @@ See [DEVELOPMENT_RULES.md](DEVELOPMENT_RULES.md) and
 ## References & attributions
 
 Training guidance is grounded in cited, peer-reviewed research (see
-[`/references`](app/references/catalog.py) in-app). Instructional videos are
-embedded from YouTube — primarily [Jeff Nippard](https://www.youtube.com/@JeffNippard) —
-and never downloaded. Full third-party attributions are in [NOTICE](NOTICE).
+[`/references`](app/references/catalog.py) in-app; every DOI verified against
+Crossref). Instructional videos are embedded from YouTube — primarily
+[Jeff Nippard](https://www.youtube.com/@JeffNippard) — and never downloaded.
+LLM-generated text is original, carries an "educational, not coaching or medical
+advice" disclaimer, and links the catalogue works as further reading. Full
+third-party attributions are in [NOTICE](NOTICE).
 
 ## License
 
