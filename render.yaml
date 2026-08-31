@@ -20,12 +20,17 @@ services:
       - key: SESSION_HTTPS_ONLY
         value: "true"
       # LLM features are off until a provider is configured in the dashboard.
+      # For a free option, set LLM_PROVIDER=groq + LLM_API_KEY, or
+      # LLM_PROVIDER=openai + LLM_BASE_URL + LLM_API_KEY + LLM_MODEL
+      # (OpenRouter free models, Cerebras, Gemini's OpenAI-compat path).
       - key: LLM_PROVIDER
         value: none
       - key: LLM_API_KEY
         sync: false
       - key: LLM_MODEL
         value: ""
+      - key: LLM_BASE_URL
+        sync: false
 
 databases:
   - name: gym-tracker-db

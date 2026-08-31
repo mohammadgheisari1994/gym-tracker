@@ -1,5 +1,7 @@
+import pytest
 from fastapi.testclient import TestClient
 
+from app.config import get_settings
 from app.database import SessionLocal
 from app.llm import get_provider
 from app.llm.http_provider import HttpChatProvider
@@ -35,6 +37,32 @@ def test_http_provider_key_requirement() -> None:
 
     ollama = HttpChatProvider(name="ollama", base_url="http://x/v1", model="m")
     assert ollama.available is True
+
+
+@pytest.fixture
+def _reset_provider_cache():
+    get_settings.cache_clear()
+    get_provider.cache_clear()
+    yield
+    get_settings.cache_clear()
+    get_provider.cache_clear()
+
+
+def test_openai_provider_mode(monkeypatch, _reset_provider_cache) -> None:
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.setenv("LLM_BASE_URL", "https://openrouter.ai/api/v1")
+    monkeypatch.setenv("LLM_MODEL", "meta-llama/llama-3.1-8b-instruct:free")
+
+    provider = get_provider()
+    assert provider.name == "openai"
+    assert provider.available is True  # base url + model is enough, key optional
+
+
+def test_unknown_provider_falls_back_to_null(monkeypatch, _reset_provider_cache) -> None:
+    monkeypatch.setenv("LLM_PROVIDER", "banana")
+    provider = get_provider()
+    assert provider.name == "none"
+    assert provider.available is False
 
 
 def test_system_prompt_forbids_named_sources() -> None:

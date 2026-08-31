@@ -67,6 +67,8 @@ When LLM_PROVIDER is set, gym-tracker sends generated prompts (never user text)
 to the configured endpoint:
   - "groq"   -> https://api.groq.com  (OpenAI-compatible)
   - "ollama" -> a self-hosted server at LLM_BASE_URL
+  - "openai" -> any OpenAI-compatible endpoint at LLM_BASE_URL (OpenRouter,
+               Cerebras, Google Gemini's compat path, a self-hosted vLLM, ...)
 
 gym-tracker does not bundle any model. Model weights and API terms belong to the
 respective providers.
