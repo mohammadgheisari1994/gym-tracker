@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_insight.html" import insight_card %}
 
 {% block title %}{{ exercise.name }} · {{ t('progress.title') }}{% endblock %}
 
@@ -12,12 +13,13 @@
         {{ t('progress.title') }}
       </p>
     </div>
-    <a href="/exercises">&larr; {{ t('nav.exercises') }}</a>
+    <a href="/exercises/{{ exercise.id }}">&larr; {{ exercise.name }}</a>
   </div>
 
   {% if not points %}
   <p class="lede">{{ t('progress.empty') }}</p>
   {% else %}
+  {{ insight_card(insight, '/exercises/' ~ exercise.id ~ '/insight', t) }}
   <div class="chart-grid">
     <figure class="chart-card">
       <figcaption>

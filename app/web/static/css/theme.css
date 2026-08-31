@@ -213,6 +213,45 @@ a:hover {
   word-break: break-all;
 }
 
+.insight-card {
+  margin: 1.25rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius);
+}
+
+.insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.insight-head form {
+  margin: 0;
+}
+
+.insight-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: var(--accent);
+}
+
+.insight-body {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.insight-meta {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   color: var(--text-muted);

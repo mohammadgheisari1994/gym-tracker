@@ -19,6 +19,11 @@ from app.services.exercises import (
     update_exercise,
 )
 from app.services.guides import generate_guide, generate_guide_in_background
+from app.services.insights import (
+    current_exercise_insight,
+    refresh_exercise_in_background,
+    refresh_exercise_insight,
+)
 from app.web.chartdata import exercise_chart_data
 from app.web.deps import DbSession, LLMProviderDep, RequiredUser, set_flash
 from app.web.forms import ExerciseForm
@@ -172,15 +177,52 @@ def regenerate_guide(
 
 
 @router.get("/{exercise_id}/progress")
-def progress(request: Request, session: DbSession, user: RequiredUser, exercise_id: int):
+def progress(
+    request: Request,
+    session: DbSession,
+    user: RequiredUser,
+    provider: LLMProviderDep,
+    background: BackgroundTasks,
+    exercise_id: int,
+):
     exercise = get_exercise(session, user, exercise_id)
     points = exercise_progress(session, exercise)
+    if provider.available and points:
+        background.add_task(refresh_exercise_in_background, user.id, exercise.id, provider)
     return render(
         request,
         "exercises/progress.html",
-        {"exercise": exercise, "points": points, "chart_data": exercise_chart_data(points)},
+        {
+            "exercise": exercise,
+            "points": points,
+            "chart_data": exercise_chart_data(points),
+            "insight": current_exercise_insight(session, user, exercise),
+        },
         user=user,
     )
+
+
+@router.post("/{exercise_id}/insight")
+def refresh_exercise_insight_route(
+    request: Request,
+    session: DbSession,
+    user: RequiredUser,
+    provider: LLMProviderDep,
+    exercise_id: int,
+):
+    exercise = get_exercise(session, user, exercise_id)
+    if not provider.available:
+        set_flash(request, "insight.unavailable", level="error")
+    else:
+        try:
+            refresh_exercise_insight(session, user, exercise, provider=provider, force=True)
+            session.commit()
+            set_flash(request, "insight.refreshed")
+        except Exception:
+            session.rollback()
+            logger.exception("Exercise insight refresh failed for %s", exercise_id)
+            set_flash(request, "insight.failed", level="error")
+    return RedirectResponse(url=f"/exercises/{exercise_id}/progress", status_code=303)
 
 
 @router.get("/{exercise_id}/edit")
