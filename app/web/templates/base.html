@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="{{ lang }}" dir="{{ 'rtl' if rtl else 'ltr' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>{% block title %}{{ t('app.name') }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
+  <script defer src="{{ url_for('static', path='js/vendor/htmx.min.js') }}"></script>
+  <script defer src="{{ url_for('static', path='js/app.js') }}"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">{{ t('app.name') }}</a>
+    <nav class="site-nav">
+      <a href="/">{{ t('nav.home') }}</a>
+      <span class="lang-switch" aria-label="{{ t('nav.language') }}">
+        {% for code in supported_languages %}
+        <a href="/language/{{ code }}?next={{ current_path }}"
+           class="lang-option{{ ' is-active' if code == lang }}"
+           {{ 'aria-current=page' if code == lang }}>{{ language_names[code] }}</a>
+        {% endfor %}
+      </span>
+    </nav>
+  </header>
+
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>{{ t('footer.built_with') }}</p>
+  </footer>
+</body>
+</html>
