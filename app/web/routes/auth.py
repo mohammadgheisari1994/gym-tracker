@@ -5,6 +5,7 @@ from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
 from app.i18n import LANGUAGE_NAMES, SUPPORTED_LANGUAGES
+from app.models import WeightUnit
 from app.services.auth import (
     authenticate_user,
     change_password,
@@ -145,7 +146,11 @@ def _profile_page(request: Request, user, errors: list[str], status_code: int = 
     return render(
         request,
         "auth/profile.html",
-        {"languages": _LANGUAGE_CHOICES, "errors": errors},
+        {
+            "languages": _LANGUAGE_CHOICES,
+            "weight_units": [unit.value for unit in WeightUnit],
+            "errors": errors,
+        },
         user=user,
         status_code=status_code,
     )
@@ -169,6 +174,7 @@ async def profile_submit(request: Request, session: DbSession, user: RequiredUse
         user,
         display_name=form.display_name,
         preferred_language=form.preferred_language,
+        weight_unit=form.weight_unit,
     )
     session.commit()
 

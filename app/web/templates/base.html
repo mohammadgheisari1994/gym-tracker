@@ -15,6 +15,7 @@
     <nav class="site-nav">
       {% if current_user %}
       <a href="/dashboard">{{ t('nav.dashboard') }}</a>
+      <a href="/workouts">{{ t('nav.workouts') }}</a>
       <a href="/exercises">{{ t('nav.exercises') }}</a>
       <a href="/profile">{{ current_user.display_name }}</a>
       <form method="post" action="/logout" class="inline-form">
@@ -36,7 +37,9 @@
 
   <main class="site-main">
     {% if flash %}
-    <p class="form-success" role="status">{{ t(flash) }}</p>
+    <p class="{{ 'form-errors' if flash.level == 'error' else 'form-success' }}" role="status">
+      {{ t(flash.key) }}
+    </p>
     {% endif %}
     {% block content %}{% endblock %}
   </main>

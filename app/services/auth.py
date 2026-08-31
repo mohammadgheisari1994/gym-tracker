@@ -4,7 +4,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.i18n import normalize_language
-from app.models import User
+from app.models import User, WeightUnit
 from app.security import hash_password, verify_password
 from app.services.errors import EmailAlreadyRegistered, InvalidCredentials
 
@@ -57,9 +57,11 @@ def update_profile(
     *,
     display_name: str,
     preferred_language: str,
+    weight_unit: WeightUnit,
 ) -> User:
     user.display_name = display_name.strip()
     user.preferred_language = normalize_language(preferred_language)
+    user.weight_unit = weight_unit
     session.add(user)
     return user
 

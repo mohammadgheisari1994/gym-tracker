@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% macro set_fields(set_types, t, weight_unit, weight, reps, rpe, set_type) %}
+<select name="set_type" class="set-field set-field-type"
+        aria-label="{{ t('sets.field.type') }}">
+  {% for st in set_types %}
+  <option value="{{ st.value }}" {{ 'selected' if set_type == st.value }}>
+    {{ t('sets.type.' ~ st.value) }}
+  </option>
+  {% endfor %}
+</select>
+<input type="number" step="0.25" min="0" name="weight" inputmode="decimal"
+       class="set-field" aria-label="{{ t('sets.field.weight') }} ({{ weight_unit }})"
+       placeholder="{{ t('sets.field.weight') }} · {{ weight_unit }}" value="{{ weight }}">
+<input type="number" min="1" name="reps" inputmode="numeric" required
+       class="set-field" aria-label="{{ t('sets.field.reps') }}"
+       placeholder="{{ t('sets.field.reps') }}" value="{{ reps }}">
+<input type="number" step="0.5" min="1" max="10" name="rpe" inputmode="decimal"
+       class="set-field" aria-label="RPE" placeholder="RPE" value="{{ rpe }}">
+{% endmacro %}
+
+{% block title %}
+{{ workout.title or t('workouts.untitled') }} · {{ t('app.name') }}
+{% endblock %}
+
+{% block content %}
+<section class="stack-page">
+  <div class="page-head">
+    <div>
+      <h1>{{ workout.title or t('workouts.untitled') }}</h1>
+      <p class="muted">{{ workout.performed_on.isoformat() }}</p>
+    </div>
+    <div class="card-row-actions">
+      <a href="/workouts/{{ workout.id }}/edit">{{ t('common.edit') }}</a>
+      <form method="post" action="/workouts/{{ workout.id }}/delete"
+            onsubmit="return confirm('{{ t('workouts.delete_confirm') }}')">
+        <button type="submit" class="linklike danger">{{ t('common.delete') }}</button>
+      </form>
+    </div>
+  </div>
+
+  {% if workout.notes %}<p class="workout-notes">{{ workout.notes }}</p>{% endif %}
+
+  {% for entry in workout.entries %}
+  <article class="entry" id="entry-{{ entry.id }}">
+    <header class="entry-head">
+      <div>
+        <span class="entry-title">{{ entry.exercise.name }}</span>
+        <span class="badge">
+          {{ t('exercises.muscle.' ~ entry.exercise.muscle_group.value) }}
+        </span>
+      </div>
+      <div class="entry-controls">
+        <form method="post" action="/workout-exercises/{{ entry.id }}/move">
+          <button name="direction" value="up" aria-label="{{ t('common.move_up') }}">▲</button>
+          <button name="direction" value="down" aria-label="{{ t('common.move_down') }}">▼</button>
+        </form>
+        <form method="post" action="/workout-exercises/{{ entry.id }}/delete"
+              onsubmit="return confirm('{{ t('workouts.remove_exercise_confirm') }}')">
+          <button type="submit" class="linklike danger">{{ t('common.remove') }}</button>
+        </form>
+      </div>
+    </header>
+
+    <div class="set-rows">
+      {% for s in entry.sets %}
+      <form method="post" action="/sets/{{ s.id }}" class="set-row set-type-{{ s.set_type.value }}">
+        <span class="set-index">{{ loop.index }}</span>
+        {{ set_fields(set_types, t, current_user.weight_unit.value,
+                      ('%g' % s.weight) if s.weight is not none else '', s.reps,
+                      ('%g' % s.rpe) if s.rpe is not none else '', s.set_type.value) }}
+        <span class="set-row-controls">
+          <button type="submit" formaction="/sets/{{ s.id }}/move" name="direction"
+                  value="up" formnovalidate aria-label="{{ t('common.move_up') }}">▲</button>
+          <button type="submit" formaction="/sets/{{ s.id }}/move" name="direction"
+                  value="down" formnovalidate aria-label="{{ t('common.move_down') }}">▼</button>
+          <button type="submit" class="save" aria-label="{{ t('common.save') }}">✓</button>
+          <button type="submit" formaction="/sets/{{ s.id }}/delete" formnovalidate
+                  class="danger" aria-label="{{ t('common.delete') }}">✕</button>
+        </span>
+      </form>
+      {% endfor %}
+
+      <form method="post" action="/workout-exercises/{{ entry.id }}/sets"
+            class="set-row set-row-new">
+        <span class="set-index">+</span>
+        {% set last = prefill.get(entry.id) %}
+        {{ set_fields(set_types, t, current_user.weight_unit.value,
+                      ('%g' % last.weight) if last and last.weight is not none else '',
+                      last.reps if last else '',
+                      '', last.set_type.value if last else 'normal') }}
+        <span class="set-row-controls">
+          <button type="submit" class="btn btn-primary">{{ t('sets.add') }}</button>
+        </span>
+      </form>
+    </div>
+  </article>
+  {% endfor %}
+
+  <div class="add-exercise">
+    <h2>{{ t('workouts.add_exercise') }}</h2>
+    {% if catalogue %}
+    <form method="post" action="/workouts/{{ workout.id }}/exercises" class="inline-select-form">
+      <select name="exercise_id" required>
+        {% for exercise in catalogue %}
+        <option value="{{ exercise.id }}">{{ exercise.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">{{ t('workouts.add_exercise') }}</button>
+    </form>
+    {% else %}
+    <p class="lede">
+      {{ t('workouts.no_catalogue') }}
+      <a href="/exercises/new">{{ t('exercises.add') }}</a>
+    </p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

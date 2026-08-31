@@ -23,3 +23,7 @@ class ResourceNotFound(ServiceError):
 
 class DuplicateExercise(ServiceError):
     pass
+
+
+class ExerciseInUse(ServiceError):
+    """The exercise is referenced by a workout and cannot be deleted."""
