@@ -7,6 +7,7 @@ metadata.
 from app.models.base import Base, TimestampMixin
 from app.models.exercise import Exercise, ExerciseGuide, MuscleGroup
 from app.models.insight import Insight
+from app.models.motivation import MotivationalQuote
 from app.models.user import User, WeightUnit
 from app.models.workout import SetEntry, SetType, Workout, WorkoutExercise
 
@@ -15,6 +16,7 @@ __all__ = [
     "Exercise",
     "ExerciseGuide",
     "Insight",
+    "MotivationalQuote",
     "MuscleGroup",
     "SetEntry",
     "SetType",
