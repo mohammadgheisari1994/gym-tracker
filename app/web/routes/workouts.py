@@ -39,6 +39,38 @@ def _back_to(workout_id: int, entry_id: int | None = None) -> RedirectResponse:
     return RedirectResponse(url=f"/workouts/{workout_id}{anchor}", status_code=303)
 
 
+def _is_hx(request: Request) -> bool:
+    return request.headers.get("HX-Request") == "true"
+
+
+def _entry_partial(request, session, user, entry_id: int):
+    entry = owned_entry(session, user, entry_id)
+    return render(
+        request,
+        "workouts/_entry.html",
+        {
+            "entry": entry,
+            "set_types": _SET_TYPES,
+            "prefill": {entry.id: last_set_for_entry(session, entry)},
+        },
+        user=user,
+    )
+
+
+def _entries_partial(request, session, user, workout_id: int):
+    workout = get_workout(session, user, workout_id)
+    return render(
+        request,
+        "workouts/_entries.html",
+        {
+            "workout": workout,
+            "set_types": _SET_TYPES,
+            "prefill": {entry.id: last_set_for_entry(session, entry) for entry in workout.entries},
+        },
+        user=user,
+    )
+
+
 # --- workout list / CRUD ---------------------------------------------------
 
 
@@ -163,6 +195,8 @@ async def add_workout_exercise(
 
     entry = add_exercise(session, user, workout_id, exercise_id)
     session.commit()
+    if _is_hx(request):
+        return _entries_partial(request, session, user, workout_id)
     return _back_to(workout_id, entry.id)
 
 
@@ -173,6 +207,8 @@ def delete_workout_exercise(
     workout_id = owned_entry(session, user, entry_id).workout_id
     remove_exercise(session, user, entry_id)
     session.commit()
+    if _is_hx(request):
+        return _entries_partial(request, session, user, workout_id)
     return RedirectResponse(url=f"/workouts/{workout_id}", status_code=303)
 
 
@@ -183,6 +219,8 @@ async def move_workout_exercise(
     workout_id = owned_entry(session, user, entry_id).workout_id
     move_exercise(session, user, entry_id, _direction(dict(await request.form())))
     session.commit()
+    if _is_hx(request):
+        return _entries_partial(request, session, user, workout_id)
     return _back_to(workout_id, entry_id)
 
 
@@ -196,6 +234,8 @@ async def create_set(request: Request, session: DbSession, user: RequiredUser, e
     try:
         form = SetForm.model_validate(raw)
     except ValidationError:
+        if _is_hx(request):
+            return _entry_partial(request, session, user, entry_id)
         set_flash(request, "sets.error.invalid", level="error")
         return _back_to(workout_id, entry_id)
 
@@ -209,6 +249,8 @@ async def create_set(request: Request, session: DbSession, user: RequiredUser, e
         rpe=form.rpe,
     )
     session.commit()
+    if _is_hx(request):
+        return _entry_partial(request, session, user, entry_id)
     return _back_to(workout_id, entry_id)
 
 
@@ -219,6 +261,8 @@ async def edit_set(request: Request, session: DbSession, user: RequiredUser, set
     try:
         form = SetForm.model_validate(raw)
     except ValidationError:
+        if _is_hx(request):
+            return _entry_partial(request, session, user, entry_id)
         set_flash(request, "sets.error.invalid", level="error")
         return _back_to(workout_id, entry_id)
 
@@ -232,6 +276,8 @@ async def edit_set(request: Request, session: DbSession, user: RequiredUser, set
         rpe=form.rpe,
     )
     session.commit()
+    if _is_hx(request):
+        return _entry_partial(request, session, user, entry_id)
     return _back_to(workout_id, entry_id)
 
 
@@ -240,6 +286,8 @@ def delete_set(request: Request, session: DbSession, user: RequiredUser, set_id:
     workout_id, entry_id = _set_location(session, user, set_id)
     remove_set(session, user, set_id)
     session.commit()
+    if _is_hx(request):
+        return _entry_partial(request, session, user, entry_id)
     return _back_to(workout_id, entry_id)
 
 
@@ -248,6 +296,8 @@ async def reorder_set(request: Request, session: DbSession, user: RequiredUser, 
     workout_id, entry_id = _set_location(session, user, set_id)
     move_set(session, user, set_id, _direction(dict(await request.form())))
     session.commit()
+    if _is_hx(request):
+        return _entry_partial(request, session, user, entry_id)
     return _back_to(workout_id, entry_id)
 
 

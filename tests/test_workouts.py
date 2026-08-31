@@ -239,3 +239,67 @@ def test_workout_page_has_rest_timer(auth_client: TestClient) -> None:
     assert 'id="rest-timer"' in page.text
     assert 'data-default="120"' in page.text
     assert "js/rest-timer.js" in page.text
+
+
+_HX = {"HX-Request": "true"}
+
+
+def test_add_set_via_htmx_returns_only_the_entry_partial(auth_client: TestClient) -> None:
+    workout_id = _make_workout(auth_client)
+    entry_id = _add_entry(auth_client, workout_id, _make_exercise(auth_client))
+
+    resp = auth_client.post(
+        f"/workout-exercises/{entry_id}/sets",
+        data={"weight": "80", "reps": "5", "set_type": "normal", "rpe": ""},
+        headers=_HX,
+        follow_redirects=False,
+    )
+
+    assert resp.status_code == 200
+    assert "<!doctype html>" not in resp.text.lower()
+    assert f'id="entry-{entry_id}"' in resp.text
+    assert 'value="80"' in resp.text  # the new set row
+    with SessionLocal() as session:
+        assert session.query(SetEntry).count() == 1
+
+
+def test_delete_set_via_htmx_returns_the_entry_partial(auth_client: TestClient) -> None:
+    workout_id = _make_workout(auth_client)
+    entry_id = _add_entry(auth_client, workout_id, _make_exercise(auth_client))
+    _add_set(auth_client, entry_id)
+    with SessionLocal() as session:
+        set_id = session.query(SetEntry).one().id
+
+    resp = auth_client.post(f"/sets/{set_id}/delete", headers=_HX, follow_redirects=False)
+    assert resp.status_code == 200
+    assert f'id="entry-{entry_id}"' in resp.text
+    assert "<!doctype html>" not in resp.text.lower()
+
+
+def test_add_exercise_via_htmx_returns_all_entries(auth_client: TestClient) -> None:
+    workout_id = _make_workout(auth_client)
+    first = _add_entry(auth_client, workout_id, _make_exercise(auth_client, "A"))
+
+    resp = auth_client.post(
+        f"/workouts/{workout_id}/exercises",
+        data={"exercise_id": str(_make_exercise(auth_client, "B"))},
+        headers=_HX,
+        follow_redirects=False,
+    )
+
+    assert resp.status_code == 200
+    assert "<!doctype html>" not in resp.text.lower()
+    assert f'id="entry-{first}"' in resp.text
+    assert resp.text.count('class="entry"') == 2
+
+
+def test_non_htmx_set_add_still_redirects(auth_client: TestClient) -> None:
+    workout_id = _make_workout(auth_client)
+    entry_id = _add_entry(auth_client, workout_id, _make_exercise(auth_client))
+
+    resp = auth_client.post(
+        f"/workout-exercises/{entry_id}/sets",
+        data={"weight": "80", "reps": "5", "set_type": "normal", "rpe": ""},
+        follow_redirects=False,
+    )
+    assert resp.status_code == 303
