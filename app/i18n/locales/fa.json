@@ -99,6 +99,18 @@
   "guide.further_reading": "مطالعه بیشتر",
   "guide.generated_by": "ساخته‌شده توسط",
 
+  "video.heading": "ویدیوی تکنیک",
+  "video.none": "هنوز ویدیویی نیست.",
+  "video.find_on_nippard": "یکی در کانال جف نیپارد پیدا کن",
+  "video.url_label": "یک پیوند یوتیوب بچسبان",
+  "video.save": "افزودن ویدیو",
+  "video.saved": "ویدیو اضافه شد.",
+  "video.removed": "ویدیو حذف شد.",
+  "video.invalid": "این شبیه پیوند یوتیوب نیست.",
+  "video.attribution": "جاسازی‌شده از یوتیوب؛ © سازنده.",
+  "video.watch_on_youtube": "تماشا در یوتیوب",
+  "video.remove": "حذف ویدیو",
+
   "insight.label": "تحلیل",
   "insight.refresh": "به‌روزرسانی",
   "insight.disclaimer": "خلاصه تولیدشده با هوش مصنوعی از داده‌های خودت. آموزشی، نه مربی‌گری یا مشاوره پزشکی.",

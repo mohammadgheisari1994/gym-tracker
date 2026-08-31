@@ -11,6 +11,15 @@ from app.models import MuscleGroup
 from app.references import get_many
 from app.services.analytics import exercise_progress
 from app.services.errors import DuplicateExercise, ExerciseInUse
+from app.services.exercise_videos import (
+    InvalidVideoUrl,
+    attach_seed_video,
+    clear_video,
+    embed_url,
+    nippard_search_url,
+    set_manual_video,
+    watch_url,
+)
 from app.services.exercises import (
     create_exercise,
     delete_exercise,
@@ -118,6 +127,7 @@ async def create(
             status_code=409,
         )
 
+    attach_seed_video(session, exercise)
     session.commit()
     background.add_task(generate_guide_in_background, exercise.id, provider)
     set_flash(request, "exercises.saved")
@@ -135,6 +145,7 @@ def detail(
     exercise = get_exercise(session, user, exercise_id)
     guide = exercise.guide
     sources = get_many(guide.source_slugs) if guide else []
+    video = exercise.video
     return render(
         request,
         "exercises/detail.html",
@@ -143,9 +154,37 @@ def detail(
             "guide": guide,
             "sources": sources,
             "provider_available": provider.available,
+            "video": video,
+            "video_embed_url": embed_url(video.youtube_id) if video else None,
+            "video_watch_url": watch_url(video.youtube_id) if video else None,
+            "nippard_search_url": nippard_search_url(exercise.name),
         },
         user=user,
     )
+
+
+@router.post("/{exercise_id}/video")
+async def set_video(request: Request, session: DbSession, user: RequiredUser, exercise_id: int):
+    exercise = get_exercise(session, user, exercise_id)
+    raw = dict(await request.form())
+    try:
+        set_manual_video(session, exercise, raw.get("youtube", ""))
+    except InvalidVideoUrl:
+        set_flash(request, "video.invalid", level="error")
+        return RedirectResponse(url=f"/exercises/{exercise_id}", status_code=303)
+
+    session.commit()
+    set_flash(request, "video.saved")
+    return RedirectResponse(url=f"/exercises/{exercise_id}", status_code=303)
+
+
+@router.post("/{exercise_id}/video/delete")
+def delete_video(request: Request, session: DbSession, user: RequiredUser, exercise_id: int):
+    exercise = get_exercise(session, user, exercise_id)
+    clear_video(session, exercise)
+    session.commit()
+    set_flash(request, "video.removed")
+    return RedirectResponse(url=f"/exercises/{exercise_id}", status_code=303)
 
 
 @router.post("/{exercise_id}/guide")

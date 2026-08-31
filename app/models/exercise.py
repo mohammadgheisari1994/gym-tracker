@@ -48,6 +48,11 @@ class Exercise(TimestampMixin, Base):
         cascade="all, delete-orphan",
         uselist=False,
     )
+    video: Mapped["ExerciseVideo | None"] = relationship(
+        back_populates="exercise",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
 
 
 class ExerciseGuide(TimestampMixin, Base):
@@ -65,6 +70,23 @@ class ExerciseGuide(TimestampMixin, Base):
     model: Mapped[str] = mapped_column(String(120))
 
     exercise: Mapped[Exercise] = relationship(back_populates="guide")
+
+
+class ExerciseVideo(TimestampMixin, Base):
+    """An instructional video, embedded through YouTube's official player."""
+
+    __tablename__ = "exercise_videos"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    exercise_id: Mapped[int] = mapped_column(
+        ForeignKey("exercises.id", ondelete="CASCADE"), unique=True
+    )
+    youtube_id: Mapped[str] = mapped_column(String(20))
+    title: Mapped[str | None] = mapped_column(String(200))
+    # "seed" (from the curated list) or "manual" (the user pasted a URL)
+    source: Mapped[str] = mapped_column(String(10))
+
+    exercise: Mapped[Exercise] = relationship(back_populates="video")
 
 
 # Case-insensitive uniqueness of an exercise name within one user's catalogue.

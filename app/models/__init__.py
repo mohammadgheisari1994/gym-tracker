@@ -5,7 +5,12 @@ metadata.
 """
 
 from app.models.base import Base, TimestampMixin
-from app.models.exercise import Exercise, ExerciseGuide, MuscleGroup
+from app.models.exercise import (
+    Exercise,
+    ExerciseGuide,
+    ExerciseVideo,
+    MuscleGroup,
+)
 from app.models.insight import Insight
 from app.models.motivation import MotivationalQuote
 from app.models.user import User, WeightUnit
@@ -15,6 +20,7 @@ __all__ = [
     "Base",
     "Exercise",
     "ExerciseGuide",
+    "ExerciseVideo",
     "Insight",
     "MotivationalQuote",
     "MuscleGroup",
