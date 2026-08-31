@@ -7,6 +7,15 @@
 <section class="stack-page">
   <h1>{{ t('dashboard.welcome') }}, {{ current_user.display_name }}</h1>
 
+  <p class="motivation">
+    {% if quote %}
+    {{ quote.body }}
+    <span class="motivation-note">{{ t('motivation.ai_note') }}</span>
+    {% else %}
+    {{ t('motivation.fallback.' ~ fallback_quote_index) }}
+    {% endif %}
+  </p>
+
   {% if not stats.has_data %}
   <p class="lede">{{ t('dashboard.empty') }}</p>
   <a class="btn btn-primary" href="/workouts/new">{{ t('workouts.add') }}</a>

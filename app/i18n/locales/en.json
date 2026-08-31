@@ -106,6 +106,12 @@
   "insight.unavailable": "Insights are unavailable — no LLM provider is configured.",
   "insight.failed": "Could not refresh the insight. Try again in a moment.",
 
+  "motivation.ai_note": "— for you, from your recent training",
+  "motivation.fallback.0": "Every logged set is a vote for the lifter you are becoming.",
+  "motivation.fallback.1": "Consistency beats intensity. Show up, log it, repeat.",
+  "motivation.fallback.2": "Small progress is still progress — add a rep, add a kilo, keep going.",
+  "motivation.fallback.3": "The hardest part was deciding to train. You already did that.",
+
   "exercises.title": "Exercises",
   "exercises.add": "Add exercise",
   "exercises.edit_title": "Edit exercise",

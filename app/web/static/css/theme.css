@@ -252,6 +252,21 @@ a:hover {
   color: var(--text-muted);
 }
 
+.motivation {
+  margin: 0.5rem 0 1.5rem;
+  font-size: 1.05rem;
+  color: var(--text);
+  border-inline-start: 3px solid var(--accent);
+  padding-inline-start: 0.85rem;
+}
+
+.motivation-note {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   color: var(--text-muted);

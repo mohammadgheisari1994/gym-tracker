@@ -1,6 +1,7 @@
 """Server-rendered pages."""
 
 import logging
+from datetime import date
 
 from fastapi import APIRouter, BackgroundTasks, Request
 from fastapi.responses import RedirectResponse
@@ -11,6 +12,11 @@ from app.services.insights import (
     current_overall_insight,
     refresh_overall_in_background,
     refresh_overall_insight,
+)
+from app.services.motivation import (
+    current_quote,
+    fallback_index,
+    refresh_quote_in_background,
 )
 from app.web.chartdata import overall_chart_data
 from app.web.deps import (
@@ -42,8 +48,12 @@ def dashboard(
 ):
     stats = overall_stats(session, user)
     translate = get_translator(get_language(request))
-    if provider.available and stats.has_data:
-        background.add_task(refresh_overall_in_background, user.id, provider)
+    if provider.available:
+        background.add_task(refresh_quote_in_background, user.id, provider)
+        if stats.has_data:
+            background.add_task(refresh_overall_in_background, user.id, provider)
+
+    quote = current_quote(session, user)
     return render(
         request,
         "dashboard.html",
@@ -51,6 +61,8 @@ def dashboard(
             "stats": stats,
             "chart_data": overall_chart_data(stats, translate),
             "insight": current_overall_insight(session, user),
+            "quote": quote,
+            "fallback_quote_index": fallback_index(date.today()),
         },
         user=user,
     )
