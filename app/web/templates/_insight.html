@@ -1,0 +1,14 @@
+{% macro insight_card(insight, refresh_action, t) %}
+{% if insight %}
+<section class="insight-card">
+  <div class="insight-head">
+    <span class="insight-label">{{ t('insight.label') }}</span>
+    <form method="post" action="{{ refresh_action }}">
+      <button type="submit" class="linklike">{{ t('insight.refresh') }}</button>
+    </form>
+  </div>
+  <p class="insight-body">{{ insight.body }}</p>
+  <p class="insight-meta">{{ t('insight.disclaimer') }}</p>
+</section>
+{% endif %}
+{% endmacro %}

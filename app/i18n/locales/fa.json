@@ -99,6 +99,13 @@
   "guide.further_reading": "مطالعه بیشتر",
   "guide.generated_by": "ساخته‌شده توسط",
 
+  "insight.label": "تحلیل",
+  "insight.refresh": "به‌روزرسانی",
+  "insight.disclaimer": "خلاصه تولیدشده با هوش مصنوعی از داده‌های خودت. آموزشی، نه مربی‌گری یا مشاوره پزشکی.",
+  "insight.refreshed": "تحلیل به‌روزرسانی شد.",
+  "insight.unavailable": "تحلیل‌ها در دسترس نیستند — هیچ ارائه‌دهنده‌ای پیکربندی نشده است.",
+  "insight.failed": "به‌روزرسانی تحلیل ممکن نشد. کمی بعد دوباره تلاش کن.",
+
   "exercises.title": "حرکات",
   "exercises.add": "افزودن حرکت",
   "exercises.edit_title": "ویرایش حرکت",

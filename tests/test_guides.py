@@ -1,46 +1,11 @@
-import pytest
 from fastapi.testclient import TestClient
 
 from app.database import SessionLocal
 from app.llm import get_provider
-from app.llm.base import LLMProvider, LLMResult
 from app.llm.http_provider import HttpChatProvider
-from app.main import app
 from app.models import Exercise, ExerciseGuide
 from app.services.guides import _SYSTEM_PROMPT, GUIDE_SOURCE_SLUGS
-from app.web.deps import get_llm_provider
-from tests.conftest import register
-
-_GUIDE_TEXT = (
-    "Setup: brace your core and set your feet.\n"
-    "1. Lower under control.\n"
-    "2. Drive back up.\n"
-    "Range of motion: full depth without losing a neutral spine."
-)
-
-
-class FakeProvider(LLMProvider):
-    name = "fake"
-
-    def __init__(self, text: str = _GUIDE_TEXT) -> None:
-        self.text = text
-        self.calls: list[str] = []
-
-    @property
-    def available(self) -> bool:
-        return True
-
-    def complete(self, *, system: str, prompt: str, max_tokens: int = 700) -> LLMResult:
-        self.calls.append(prompt)
-        return LLMResult(text=self.text, provider="fake", model="fake-1")
-
-
-@pytest.fixture
-def fake_llm():
-    provider = FakeProvider()
-    app.dependency_overrides[get_llm_provider] = lambda: provider
-    yield provider
-    app.dependency_overrides.pop(get_llm_provider, None)
+from tests.conftest import FakeLLM, register
 
 
 def _add_exercise(client: TestClient, name: str = "Squat") -> int:
@@ -82,7 +47,7 @@ def test_system_prompt_forbids_named_sources() -> None:
 
 
 def test_creating_exercise_generates_and_shows_guide(
-    fake_llm: FakeProvider, auth_client: TestClient
+    fake_llm: FakeLLM, auth_client: TestClient
 ) -> None:
     exercise_id = _add_exercise(auth_client)
 
@@ -93,7 +58,7 @@ def test_creating_exercise_generates_and_shows_guide(
         assert list(guide.source_slugs) == list(GUIDE_SOURCE_SLUGS)
 
     page = auth_client.get(f"/exercises/{exercise_id}")
-    assert "Drive back up." in page.text
+    assert "Move well." in page.text
     assert "coaching or medical advice" in page.text
     assert "Further reading" in page.text
 
@@ -108,7 +73,7 @@ def test_no_provider_shows_unavailable(auth_client: TestClient) -> None:
     assert "no LLM provider is configured" in page.text
 
 
-def test_regenerate_replaces_the_guide(fake_llm: FakeProvider, auth_client: TestClient) -> None:
+def test_regenerate_replaces_the_guide(fake_llm: FakeLLM, auth_client: TestClient) -> None:
     exercise_id = _add_exercise(auth_client)
 
     fake_llm.text = "Setup: new cue.\n1. New step.\nRange of motion: new."
@@ -120,7 +85,7 @@ def test_regenerate_replaces_the_guide(fake_llm: FakeProvider, auth_client: Test
         assert "New step." in guide.body
 
 
-def test_guide_routes_are_user_scoped(fake_llm: FakeProvider, client: TestClient) -> None:
+def test_guide_routes_are_user_scoped(fake_llm: FakeLLM, client: TestClient) -> None:
     register(client, email="a@example.com", display_name="A")
     exercise_id = _add_exercise(client, "Secret")
 

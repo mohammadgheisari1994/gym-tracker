@@ -5,8 +5,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import text
 
 from app.database import engine
+from app.llm.base import LLMProvider, LLMResult
 from app.main import app
 from app.models import Base
+from app.web.deps import get_llm_provider
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -56,3 +58,27 @@ def auth_client(client: TestClient) -> TestClient:
     """A client already signed in as a default user."""
     register(client)
     return client
+
+
+class FakeLLM(LLMProvider):
+    name = "fake"
+
+    def __init__(self, text: str = "Setup: brace.\n1. Move well.\nRange of motion: full.") -> None:
+        self.text = text
+        self.calls: list[str] = []
+
+    @property
+    def available(self) -> bool:
+        return True
+
+    def complete(self, *, system: str, prompt: str, max_tokens: int = 700) -> LLMResult:
+        self.calls.append(prompt)
+        return LLMResult(text=self.text, provider="fake", model="fake-1")
+
+
+@pytest.fixture
+def fake_llm() -> Iterator[FakeLLM]:
+    provider = FakeLLM()
+    app.dependency_overrides[get_llm_provider] = lambda: provider
+    yield provider
+    app.dependency_overrides.pop(get_llm_provider, None)
