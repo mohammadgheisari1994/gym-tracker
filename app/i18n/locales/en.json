@@ -1,0 +1,11 @@
+{
+  "app.name": "gym-tracker",
+  "app.tagline": "Track every set. See every gain.",
+  "nav.home": "Home",
+  "nav.language": "Language",
+  "home.heading": "Your training log, done right",
+  "home.body": "Log workouts, tag your sets, watch your estimated 1RM climb, and let the app write the form cues for you.",
+  "home.cta": "Get started",
+  "footer.built_with": "Built with FastAPI, HTMX, and PostgreSQL.",
+  "language.switched": "Language updated."
+}
