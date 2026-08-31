@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exercise.name }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="stack-page">
+  <div class="page-head">
+    <div>
+      <h1>{{ exercise.name }}</h1>
+      <p class="muted">{{ t('exercises.muscle.' ~ exercise.muscle_group.value) }}</p>
+    </div>
+    <div class="card-row-actions">
+      <a href="/exercises/{{ exercise.id }}/progress">{{ t('progress.link') }}</a>
+      <a href="/exercises/{{ exercise.id }}/edit">{{ t('common.edit') }}</a>
+      <a href="/exercises">&larr; {{ t('nav.exercises') }}</a>
+    </div>
+  </div>
+
+  {% if exercise.notes %}
+  <p class="workout-notes">{{ exercise.notes }}</p>
+  {% endif %}
+
+  <section class="guide">
+    <h2>{{ t('guide.heading') }}</h2>
+
+    {% if guide %}
+    <div class="guide-body">{{ guide.body }}</div>
+    <p class="guide-disclaimer">{{ t('guide.disclaimer') }}</p>
+
+    {% if sources %}
+    <details class="guide-sources">
+      <summary>{{ t('guide.further_reading') }}</summary>
+      <ul dir="ltr">
+        {% for ref in sources %}
+        <li>
+          {{ ref.authors }} ({{ ref.year }}). <em>{{ ref.title }}.</em>
+          <a href="{{ ref.link }}" target="_blank" rel="noopener noreferrer">
+            {{ ref.doi if ref.doi else t('references.open_link') }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+
+    <p class="muted">{{ t('guide.generated_by') }} {{ guide.provider }} · {{ guide.model }}</p>
+    <form method="post" action="/exercises/{{ exercise.id }}/guide">
+      <button type="submit" class="btn btn-outline">{{ t('guide.regenerate') }}</button>
+    </form>
+
+    {% elif provider_available %}
+    <p class="lede">{{ t('guide.pending') }}</p>
+    <form method="post" action="/exercises/{{ exercise.id }}/guide">
+      <button type="submit" class="btn btn-primary">{{ t('guide.generate') }}</button>
+    </form>
+
+    {% else %}
+    <p class="lede">{{ t('guide.unavailable') }}</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

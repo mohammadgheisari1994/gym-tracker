@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     # Set true in production so the session cookie carries the Secure flag.
     session_https_only: bool = False
 
+    # LLM provider for automated guides / insights / quotes.
+    # "none" (default, no calls), "groq", or "ollama".
+    llm_provider: str = "none"
+    llm_api_key: str = ""
+    llm_model: str = ""
+    llm_base_url: str = "http://localhost:11434"
+
     @field_validator("database_url")
     @classmethod
     def _normalize_driver(cls, value: str) -> str:

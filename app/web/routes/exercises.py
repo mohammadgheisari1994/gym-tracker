@@ -1,10 +1,14 @@
 """The personal exercise catalogue."""
 
-from fastapi import APIRouter, Request
+import logging
+
+from fastapi import APIRouter, BackgroundTasks, Request
 from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
+from app.llm import LLMUnavailable
 from app.models import MuscleGroup
+from app.references import get_many
 from app.services.analytics import exercise_progress
 from app.services.errors import DuplicateExercise, ExerciseInUse
 from app.services.exercises import (
@@ -14,12 +18,14 @@ from app.services.exercises import (
     list_exercises,
     update_exercise,
 )
+from app.services.guides import generate_guide, generate_guide_in_background
 from app.web.chartdata import exercise_chart_data
-from app.web.deps import DbSession, RequiredUser, set_flash
+from app.web.deps import DbSession, LLMProviderDep, RequiredUser, set_flash
 from app.web.forms import ExerciseForm
 from app.web.templating import render
 
 router = APIRouter(tags=["exercises"], prefix="/exercises")
+logger = logging.getLogger(__name__)
 
 _MUSCLE_GROUPS = tuple(MuscleGroup)
 
@@ -69,7 +75,13 @@ def new_form(request: Request, user: RequiredUser):
 
 
 @router.post("")
-async def create(request: Request, session: DbSession, user: RequiredUser):
+async def create(
+    request: Request,
+    session: DbSession,
+    user: RequiredUser,
+    provider: LLMProviderDep,
+    background: BackgroundTasks,
+):
     raw = dict(await request.form())
     try:
         form = ExerciseForm.model_validate(raw)
@@ -84,7 +96,7 @@ async def create(request: Request, session: DbSession, user: RequiredUser):
         )
 
     try:
-        create_exercise(
+        exercise = create_exercise(
             session,
             user,
             name=form.name,
@@ -102,8 +114,61 @@ async def create(request: Request, session: DbSession, user: RequiredUser):
         )
 
     session.commit()
+    background.add_task(generate_guide_in_background, exercise.id, provider)
     set_flash(request, "exercises.saved")
-    return RedirectResponse(url="/exercises", status_code=303)
+    return RedirectResponse(url=f"/exercises/{exercise.id}", status_code=303)
+
+
+@router.get("/{exercise_id}")
+def detail(
+    request: Request,
+    session: DbSession,
+    user: RequiredUser,
+    provider: LLMProviderDep,
+    exercise_id: int,
+):
+    exercise = get_exercise(session, user, exercise_id)
+    guide = exercise.guide
+    sources = get_many(guide.source_slugs) if guide else []
+    return render(
+        request,
+        "exercises/detail.html",
+        {
+            "exercise": exercise,
+            "guide": guide,
+            "sources": sources,
+            "provider_available": provider.available,
+        },
+        user=user,
+    )
+
+
+@router.post("/{exercise_id}/guide")
+def regenerate_guide(
+    request: Request,
+    session: DbSession,
+    user: RequiredUser,
+    provider: LLMProviderDep,
+    exercise_id: int,
+):
+    exercise = get_exercise(session, user, exercise_id)
+    if not provider.available:
+        set_flash(request, "guide.unavailable", level="error")
+        return RedirectResponse(url=f"/exercises/{exercise_id}", status_code=303)
+
+    try:
+        generate_guide(session, exercise, provider=provider)
+        session.commit()
+        set_flash(request, "guide.generated")
+    except LLMUnavailable:
+        session.rollback()
+        set_flash(request, "guide.unavailable", level="error")
+    except Exception:
+        session.rollback()
+        logger.exception("Guide generation failed for exercise %s", exercise_id)
+        set_flash(request, "guide.failed", level="error")
+
+    return RedirectResponse(url=f"/exercises/{exercise_id}", status_code=303)
 
 
 @router.get("/{exercise_id}/progress")

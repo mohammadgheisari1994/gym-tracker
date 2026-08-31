@@ -88,6 +88,17 @@
   "progress.series.top_weight": "بیشترین وزن",
   "progress.series.e1rm": "یک‌تکرار بیشینه تخمینی (اپلی)",
 
+  "guide.heading": "راهنمای اجرا",
+  "guide.pending": "راهنما در حال نوشته‌شدن است. کمی بعد صفحه را تازه کن یا همین حالا بساز.",
+  "guide.generate": "ساخت راهنما",
+  "guide.regenerate": "ساخت دوباره",
+  "guide.generated": "راهنما ساخته شد.",
+  "guide.failed": "ساخت راهنما ناموفق بود. کمی بعد دوباره تلاش کن.",
+  "guide.unavailable": "راهنمای هوش مصنوعی در دسترس نیست — هیچ ارائه‌دهنده‌ای پیکربندی نشده است.",
+  "guide.disclaimer": "تولیدشده با هوش مصنوعی و فقط برای آموزش. جایگزین مربی‌گری یا مشاوره پزشکی نیست.",
+  "guide.further_reading": "مطالعه بیشتر",
+  "guide.generated_by": "ساخته‌شده توسط",
+
   "exercises.title": "حرکات",
   "exercises.add": "افزودن حرکت",
   "exercises.edit_title": "ویرایش حرکت",
