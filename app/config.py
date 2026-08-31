@@ -16,6 +16,13 @@ class Settings(BaseSettings):
     default_language: str = "en"
     database_url: str = "postgresql+psycopg://gym:gym@localhost:5432/gym"
 
+    # Signs the session cookie. Override with a random value in every real
+    # deployment; the default only exists so local dev and tests run.
+    secret_key: str = "dev-insecure-secret-change-me"
+    session_cookie: str = "gym_session"
+    # Set true in production so the session cookie carries the Secure flag.
+    session_https_only: bool = False
+
     @field_validator("database_url")
     @classmethod
     def _normalize_driver(cls, value: str) -> str:

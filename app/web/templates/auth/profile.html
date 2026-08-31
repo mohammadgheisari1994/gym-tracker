@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_messages.html" import messages %}
+
+{% block title %}{{ t('auth.profile.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+  <h1>{{ t('auth.profile.title') }}</h1>
+  {{ messages(errors, none, t) }}
+
+  <form method="post" action="/profile" class="stacked-form">
+    <label>
+      {{ t('auth.field.display_name') }}
+      <input type="text" name="display_name" required maxlength="80"
+             value="{{ current_user.display_name }}">
+    </label>
+    <label>
+      {{ t('auth.field.language') }}
+      <select name="preferred_language">
+        {% for code, name in languages %}
+        <option value="{{ code }}"
+          {{ 'selected' if current_user.preferred_language == code }}>{{ name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">{{ t('auth.profile.save') }}</button>
+  </form>
+
+  <h2>{{ t('auth.profile.password_heading') }}</h2>
+  <form method="post" action="/profile/password" class="stacked-form">
+    <label>
+      {{ t('auth.field.current_password') }}
+      <input type="password" name="current_password" required
+             autocomplete="current-password">
+    </label>
+    <label>
+      {{ t('auth.field.new_password') }}
+      <input type="password" name="new_password" required minlength="8"
+             autocomplete="new-password">
+    </label>
+    <label>
+      {{ t('auth.field.new_password_confirm') }}
+      <input type="password" name="new_password_confirm" required minlength="8"
+             autocomplete="new-password">
+    </label>
+    <button type="submit" class="btn btn-primary">
+      {{ t('auth.profile.change_password') }}
+    </button>
+  </form>
+</section>
+{% endblock %}

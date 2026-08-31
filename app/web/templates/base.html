@@ -13,7 +13,16 @@
   <header class="site-header">
     <a class="brand" href="/">{{ t('app.name') }}</a>
     <nav class="site-nav">
-      <a href="/">{{ t('nav.home') }}</a>
+      {% if current_user %}
+      <a href="/dashboard">{{ t('nav.dashboard') }}</a>
+      <a href="/profile">{{ current_user.display_name }}</a>
+      <form method="post" action="/logout" class="inline-form">
+        <button type="submit" class="linklike">{{ t('nav.logout') }}</button>
+      </form>
+      {% else %}
+      <a href="/login">{{ t('nav.login') }}</a>
+      <a href="/signup">{{ t('nav.signup') }}</a>
+      {% endif %}
       <span class="lang-switch" aria-label="{{ t('nav.language') }}">
         {% for code in supported_languages %}
         <a href="/language/{{ code }}?next={{ current_path }}"
@@ -25,6 +34,9 @@
   </header>
 
   <main class="site-main">
+    {% if flash %}
+    <p class="form-success" role="status">{{ t(flash) }}</p>
+    {% endif %}
     {% block content %}{% endblock %}
   </main>
 

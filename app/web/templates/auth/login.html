@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_messages.html" import messages %}
+
+{% block title %}{{ t('auth.login.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+  <h1>{{ t('auth.login.title') }}</h1>
+  {{ messages(errors, none, t) }}
+  <form method="post" action="/login" class="stacked-form">
+    <label>
+      {{ t('auth.field.email') }}
+      <input type="email" name="email" required autocomplete="email"
+             value="{{ (values or {}).get('email', '') }}">
+    </label>
+    <label>
+      {{ t('auth.field.password') }}
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button type="submit" class="btn btn-primary">{{ t('auth.login.submit') }}</button>
+  </form>
+  <p class="auth-alt">
+    {{ t('auth.login.no_account') }} <a href="/signup">{{ t('nav.signup') }}</a>
+  </p>
+</section>
+{% endblock %}

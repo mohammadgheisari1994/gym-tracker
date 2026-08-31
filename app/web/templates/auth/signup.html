@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from "_messages.html" import messages %}
+
+{% block title %}{{ t('auth.signup.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+  <h1>{{ t('auth.signup.title') }}</h1>
+  {{ messages(errors, none, t) }}
+  <form method="post" action="/signup" class="stacked-form">
+    <label>
+      {{ t('auth.field.display_name') }}
+      <input type="text" name="display_name" required maxlength="80"
+             value="{{ (values or {}).get('display_name', '') }}">
+    </label>
+    <label>
+      {{ t('auth.field.email') }}
+      <input type="email" name="email" required autocomplete="email"
+             value="{{ (values or {}).get('email', '') }}">
+    </label>
+    <label>
+      {{ t('auth.field.password') }}
+      <input type="password" name="password" required minlength="8"
+             autocomplete="new-password">
+    </label>
+    <label>
+      {{ t('auth.field.password_confirm') }}
+      <input type="password" name="password_confirm" required minlength="8"
+             autocomplete="new-password">
+    </label>
+    <label>
+      {{ t('auth.field.language') }}
+      <select name="preferred_language">
+        {% for code, name in languages %}
+        <option value="{{ code }}"
+          {{ 'selected' if (values or {}).get('preferred_language', lang) == code }}>
+          {{ name }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">{{ t('auth.signup.submit') }}</button>
+  </form>
+  <p class="auth-alt">
+    {{ t('auth.signup.have_account') }} <a href="/login">{{ t('nav.login') }}</a>
+  </p>
+</section>
+{% endblock %}
