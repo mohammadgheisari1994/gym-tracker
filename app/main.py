@@ -2,12 +2,22 @@
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import get_settings
-from app.web.routes import auth, exercises, health, language, pages, references
+from app.services.errors import ResourceNotFound
+from app.web.routes import (
+    auth,
+    exercises,
+    health,
+    language,
+    pages,
+    references,
+    workouts,
+)
 
 _STATIC_DIR = Path(__file__).parent / "web" / "static"
 
@@ -24,6 +34,10 @@ def create_app() -> FastAPI:
         same_site="lax",
     )
 
+    @app.exception_handler(ResourceNotFound)
+    async def _handle_not_found(request: Request, exc: ResourceNotFound):
+        return PlainTextResponse("Not found", status_code=404)
+
     app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
     app.include_router(health.router)
@@ -32,6 +46,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(references.router)
     app.include_router(exercises.router)
+    app.include_router(workouts.router)
 
     return app
 

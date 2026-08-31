@@ -6,8 +6,8 @@ Every function takes the acting user and scopes all queries to them.
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models import Exercise, MuscleGroup, User
-from app.services.errors import DuplicateExercise, ResourceNotFound
+from app.models import Exercise, MuscleGroup, User, WorkoutExercise
+from app.services.errors import DuplicateExercise, ExerciseInUse, ResourceNotFound
 
 
 def list_exercises(session: Session, user: User) -> list[Exercise]:
@@ -75,4 +75,10 @@ def update_exercise(
 
 
 def delete_exercise(session: Session, user: User, exercise_id: int) -> None:
-    session.delete(get_exercise(session, user, exercise_id))
+    exercise = get_exercise(session, user, exercise_id)
+    in_use = session.scalar(
+        select(WorkoutExercise.id).where(WorkoutExercise.exercise_id == exercise.id)
+    )
+    if in_use is not None:
+        raise ExerciseInUse
+    session.delete(exercise)

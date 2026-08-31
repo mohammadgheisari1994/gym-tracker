@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('workouts.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+  <h1>
+    {{ t('workouts.edit_title') if action != '/workouts' else t('workouts.add') }}
+  </h1>
+  <form method="post" action="{{ action }}" class="stacked-form">
+    <label>
+      {{ t('workouts.field.date') }}
+      <input type="date" name="performed_on" required
+             value="{{ values.get('performed_on', '') }}">
+    </label>
+    <label>
+      {{ t('workouts.field.title') }}
+      <input type="text" name="title" maxlength="120"
+             value="{{ values.get('title', '') }}">
+    </label>
+    <label>
+      {{ t('workouts.field.notes') }}
+      <textarea name="notes" rows="3" maxlength="2000">{{ values.get('notes', '') }}</textarea>
+    </label>
+    <button type="submit" class="btn btn-primary">{{ t('common.save') }}</button>
+  </form>
+  <p class="auth-alt"><a href="/workouts">{{ t('common.cancel') }}</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('workouts.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="stack-page">
+  <div class="page-head">
+    <h1>{{ t('workouts.title') }}</h1>
+    <a class="btn btn-primary" href="/workouts/new">{{ t('workouts.add') }}</a>
+  </div>
+
+  {% if not workouts %}
+  <p class="lede">{{ t('workouts.empty') }}</p>
+  {% else %}
+  <ul class="card-list">
+    {% for workout in workouts %}
+    <li class="card-row">
+      <div class="card-row-main">
+        <a class="card-row-title" href="/workouts/{{ workout.id }}">
+          {{ workout.title or t('workouts.untitled') }}
+        </a>
+        <p class="card-row-note">
+          {{ workout.performed_on.isoformat() }} ·
+          {{ t('workouts.exercises_label') }}: {{ workout.entries | length }}
+        </p>
+      </div>
+      <div class="card-row-actions">
+        <a href="/workouts/{{ workout.id }}">{{ t('workouts.open') }}</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}

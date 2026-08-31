@@ -1,11 +1,11 @@
 """The personal exercise catalogue."""
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
 from app.models import MuscleGroup
-from app.services.errors import DuplicateExercise, ResourceNotFound
+from app.services.errors import DuplicateExercise, ExerciseInUse
 from app.services.exercises import (
     create_exercise,
     delete_exercise,
@@ -106,11 +106,7 @@ async def create(request: Request, session: DbSession, user: RequiredUser):
 
 @router.get("/{exercise_id}/edit")
 def edit_form(request: Request, session: DbSession, user: RequiredUser, exercise_id: int):
-    try:
-        exercise = get_exercise(session, user, exercise_id)
-    except ResourceNotFound:
-        raise HTTPException(status_code=404) from None
-
+    exercise = get_exercise(session, user, exercise_id)
     return _form_page(
         request,
         user,
@@ -149,8 +145,6 @@ async def update(request: Request, session: DbSession, user: RequiredUser, exerc
             muscle_group=form.muscle_group,
             notes=form.notes,
         )
-    except ResourceNotFound:
-        raise HTTPException(status_code=404) from None
     except DuplicateExercise:
         return _form_page(
             request,
@@ -170,8 +164,9 @@ async def update(request: Request, session: DbSession, user: RequiredUser, exerc
 def delete(request: Request, session: DbSession, user: RequiredUser, exercise_id: int):
     try:
         delete_exercise(session, user, exercise_id)
-    except ResourceNotFound:
-        raise HTTPException(status_code=404) from None
+    except ExerciseInUse:
+        set_flash(request, "exercises.error.in_use", level="error")
+        return RedirectResponse(url="/exercises", status_code=303)
 
     session.commit()
     set_flash(request, "exercises.deleted")

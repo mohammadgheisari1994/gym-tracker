@@ -20,12 +20,12 @@ _LANGUAGE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 DbSession = Annotated[Session, Depends(get_session)]
 
 
-def set_flash(request: Request, message_key: str) -> None:
+def set_flash(request: Request, message_key: str, *, level: str = "success") -> None:
     """Stash a one-shot message shown on the next rendered page."""
-    request.session[FLASH_SESSION_KEY] = message_key
+    request.session[FLASH_SESSION_KEY] = {"key": message_key, "level": level}
 
 
-def pop_flash(request: Request) -> str | None:
+def pop_flash(request: Request) -> dict[str, str] | None:
     return request.session.pop(FLASH_SESSION_KEY, None)
 
 

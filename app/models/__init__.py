@@ -6,6 +6,18 @@ metadata.
 
 from app.models.base import Base, TimestampMixin
 from app.models.exercise import Exercise, MuscleGroup
-from app.models.user import User
+from app.models.user import User, WeightUnit
+from app.models.workout import SetEntry, SetType, Workout, WorkoutExercise
 
-__all__ = ["Base", "Exercise", "MuscleGroup", "TimestampMixin", "User"]
+__all__ = [
+    "Base",
+    "Exercise",
+    "MuscleGroup",
+    "SetEntry",
+    "SetType",
+    "TimestampMixin",
+    "User",
+    "WeightUnit",
+    "Workout",
+    "WorkoutExercise",
+]
