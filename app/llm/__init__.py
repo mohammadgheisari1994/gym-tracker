@@ -39,4 +39,15 @@ def get_provider() -> LLMProvider:
             model=settings.llm_model or _DEFAULT_OLLAMA_MODEL,
         )
 
+    if provider == "openai":
+        # Any OpenAI-compatible endpoint: OpenRouter, Cerebras, Gemini's
+        # compat path, Together, a self-hosted vLLM, etc. LLM_BASE_URL is used
+        # verbatim and should include the version segment (e.g. .../v1).
+        return HttpChatProvider(
+            name="openai",
+            base_url=settings.llm_base_url,
+            model=settings.llm_model,
+            api_key=settings.llm_api_key,
+        )
+
     return NullProvider()
