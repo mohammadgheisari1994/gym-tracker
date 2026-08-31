@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('references.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="prose">
+  <h1>{{ t('references.title') }}</h1>
+  <p class="lede">{{ t('references.intro') }}</p>
+
+  {% for kind, items in groups %}
+  <h2>{{ t('references.kind.' ~ kind) }}</h2>
+  <p class="muted">{{ t('references.kind_note.' ~ kind) }}</p>
+  <ul class="reference-list" dir="ltr">
+    {% for ref in items %}
+    <li>
+      <span class="reference-cite">
+        {{ ref.authors }} ({{ ref.year }}). <em>{{ ref.title }}.</em> {{ ref.source }}.
+      </span>
+      <a class="reference-link" href="{{ ref.link }}" target="_blank" rel="noopener noreferrer">
+        {{ ref.doi if ref.doi else t('references.open_link') }}
+      </a>
+      {% if ref.access %}<span class="reference-access" dir="auto">{{ ref.access }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+
+  <p class="muted">{{ t('references.notice') }}</p>
+</section>
+{% endblock %}

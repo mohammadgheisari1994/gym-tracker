@@ -1,0 +1,60 @@
+gym-tracker
+Copyright (c) 2026 Mohammadmahdi Gheisari
+Licensed under the MIT License (see LICENSE).
+
+This file records third-party works that gym-tracker depends on, cites, or
+displays, and the terms under which it does so.
+
+
+================================================================================
+1. Instructional videos
+================================================================================
+
+gym-tracker links exercises to instructional videos, primarily from the YouTube
+channel "Jeff Nippard" (https://www.youtube.com/@JeffNippard).
+
+- Videos are shown through YouTube's official embedded player (IFrame API).
+- Video files are never downloaded, copied, re-hosted, or redistributed by
+  gym-tracker.
+- All videos remain the copyright of their respective creators. Embedding
+  respects each creator's YouTube embedding settings.
+- The exercise-to-video mapping is a hand-curated editorial selection.
+
+
+================================================================================
+2. Scientific literature
+================================================================================
+
+Training guidance and the estimated one-rep-max feature are informed by
+peer-reviewed research and professional position stands. These works are cited
+under normal academic practice. gym-tracker does not reproduce their text,
+figures, or tables; full texts remain with their publishers.
+
+The current citation list is maintained in app/references/catalog.py and shown
+in-app at /references. Every DOI in that list was verified against the Crossref
+API before being committed.
+
+AI-generated exercise guides are original text. The relevant works from the
+catalog are attached as "further reading", never paraphrased from source
+transcripts or article text.
+
+
+================================================================================
+3. Bundled and declared software dependencies
+================================================================================
+
+htmx 2.0.4 (vendored at app/web/static/js/vendor/htmx.min.js)
+  https://htmx.org/  -  Zero-Clause BSD (0BSD)
+
+Runtime dependencies are declared in requirements.txt and requirements-dev.txt
+and retain their own licenses (FastAPI, Starlette, SQLAlchemy, Alembic,
+pydantic, uvicorn, psycopg, pwdlib, Jinja2 - all permissive MIT/BSD/Apache-2.0).
+
+
+================================================================================
+4. Fonts
+================================================================================
+
+The UI uses the viewer's system fonts. The CSS font stack names "Vazirmatn"
+(SIL Open Font License 1.1) as a preferred face for Persian text; the font is
+not bundled and is only used if already present on the viewer's system.
