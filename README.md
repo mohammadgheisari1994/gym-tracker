@@ -50,12 +50,19 @@ app/
   config.py        Settings loaded from the environment
   database.py      SQLAlchemy engine and session
   models/          ORM models
-  services/        Use-case logic
-  web/             Routes, templates, static assets
+  security/        Password hashing
+  services/        Use-case logic (auth, and later workout tracking)
+  web/             Routes, templates, forms, static assets
   i18n/            Translation catalogues (en, fa)
 migrations/        Alembic migrations
 tests/             Pytest suite
 ```
+
+## What works today
+
+Accounts (sign up, log in, profile, password change) with argon2-hashed
+passwords and signed-cookie sessions. Every future feature scopes its data to
+the signed-in user. Workout tracking is next.
 
 ## Contributing
 

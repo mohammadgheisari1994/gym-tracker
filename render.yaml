@@ -15,6 +15,10 @@ services:
         value: "false"
       - key: DEFAULT_LANGUAGE
         value: en
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SESSION_HTTPS_ONLY
+        value: "true"
 
 databases:
   - name: gym-tracker-db

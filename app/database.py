@@ -12,11 +12,10 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False
 
 
 def get_session() -> Iterator[Session]:
-    """Yield a session, committing on success and rolling back on error."""
+    """Yield a session, rolling back on error. Callers commit explicitly."""
     session = SessionLocal()
     try:
         yield session
-        session.commit()
     except Exception:
         session.rollback()
         raise

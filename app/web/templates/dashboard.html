@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav.dashboard') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+  <h1>{{ t('dashboard.welcome') }}, {{ current_user.display_name }}</h1>
+  <p class="lede">{{ t('dashboard.empty') }}</p>
+</section>
+{% endblock %}

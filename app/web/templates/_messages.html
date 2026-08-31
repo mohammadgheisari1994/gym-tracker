@@ -1,0 +1,10 @@
+{% macro messages(errors, success, t) %}
+{% if errors %}
+<ul class="form-errors" role="alert">
+  {% for key in errors %}<li>{{ t(key) }}</li>{% endfor %}
+</ul>
+{% endif %}
+{% if success %}
+<p class="form-success" role="status">{{ t(success) }}</p>
+{% endif %}
+{% endmacro %}
