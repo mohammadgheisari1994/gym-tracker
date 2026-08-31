@@ -551,12 +551,61 @@ input.set-field {
 }
 
 @media (max-width: 640px) {
-  .set-row {
-    grid-template-columns: 1.25rem 1fr 1fr;
-  }
-
   .set-row-controls {
-    grid-column: 1 / -1;
     justify-content: flex-end;
   }
+}
+
+.stat-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.stat-tile {
+  flex: 1 1 10rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1rem;
+}
+
+.chart-card {
+  margin: 0;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.chart-card figcaption {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-holder {
+  position: relative;
+  height: 260px;
+  direction: ltr;
 }
