@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('exercises.title') }} · {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<section class="stack-page">
+  <div class="page-head">
+    <h1>{{ t('exercises.title') }}</h1>
+    <a class="btn btn-primary" href="/exercises/new">{{ t('exercises.add') }}</a>
+  </div>
+
+  {% if not exercises %}
+  <p class="lede">{{ t('exercises.empty') }}</p>
+  {% else %}
+  <ul class="card-list">
+    {% for exercise in exercises %}
+    <li class="card-row">
+      <div class="card-row-main">
+        <span class="card-row-title">{{ exercise.name }}</span>
+        <span class="badge badge-muscle">
+          {{ t('exercises.muscle.' ~ exercise.muscle_group.value) }}
+        </span>
+        {% if exercise.notes %}<p class="card-row-note">{{ exercise.notes }}</p>{% endif %}
+      </div>
+      <div class="card-row-actions">
+        <a href="/exercises/{{ exercise.id }}/edit">{{ t('common.edit') }}</a>
+        <form method="post" action="/exercises/{{ exercise.id }}/delete"
+              onsubmit="return confirm('{{ t('exercises.delete_confirm') }}')">
+          <button type="submit" class="linklike danger">{{ t('common.delete') }}</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}
