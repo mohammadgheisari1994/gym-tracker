@@ -175,6 +175,7 @@ async def profile_submit(request: Request, session: DbSession, user: RequiredUse
         display_name=form.display_name,
         preferred_language=form.preferred_language,
         weight_unit=form.weight_unit,
+        default_rest_seconds=form.default_rest_seconds,
     )
     session.commit()
 

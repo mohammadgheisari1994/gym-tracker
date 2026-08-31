@@ -34,6 +34,11 @@
         {% endfor %}
       </select>
     </label>
+    <label>
+      {{ t('auth.field.default_rest') }}
+      <input type="number" name="default_rest_seconds" min="15" max="600" step="5"
+             value="{{ current_user.default_rest_seconds }}">
+    </label>
     <button type="submit" class="btn btn-primary">{{ t('auth.profile.save') }}</button>
   </form>
 

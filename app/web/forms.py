@@ -12,6 +12,11 @@ from pydantic import BaseModel, EmailStr, Field, field_validator, model_validato
 
 from app.i18n import SUPPORTED_LANGUAGES
 from app.models import MuscleGroup, SetType, WeightUnit
+from app.models.user import (
+    DEFAULT_REST_SECONDS,
+    MAX_REST_SECONDS,
+    MIN_REST_SECONDS,
+)
 
 _MIN_PASSWORD_LENGTH = 8
 
@@ -57,6 +62,7 @@ class ProfileForm(BaseModel):
     display_name: str = Field(min_length=1, max_length=80)
     preferred_language: str = "en"
     weight_unit: WeightUnit = WeightUnit.KG
+    default_rest_seconds: int = DEFAULT_REST_SECONDS
 
     @field_validator("preferred_language")
     @classmethod
@@ -67,6 +73,15 @@ class ProfileForm(BaseModel):
     @classmethod
     def _known_weight_unit(cls, value: object) -> object:
         return _enum_or(WeightUnit, WeightUnit.KG, value)
+
+    @field_validator("default_rest_seconds", mode="before")
+    @classmethod
+    def _clamp_rest(cls, value: object) -> int:
+        try:
+            seconds = int(value)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            return DEFAULT_REST_SECONDS
+        return max(MIN_REST_SECONDS, min(MAX_REST_SECONDS, seconds))
 
 
 class ExerciseForm(BaseModel):
