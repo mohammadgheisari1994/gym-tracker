@@ -20,6 +20,43 @@
   <p class="workout-notes">{{ exercise.notes }}</p>
   {% endif %}
 
+  <section class="video">
+    <h2>{{ t('video.heading') }}</h2>
+    {% if video %}
+    <div class="video-frame">
+      <iframe src="{{ video_embed_url }}" title="{{ video.title or exercise.name }}"
+              loading="lazy" allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+    <p class="muted">
+      {% if video.title %}{{ video.title }} · {% endif %}
+      {{ t('video.attribution') }}
+      <a href="{{ video_watch_url }}" target="_blank" rel="noopener noreferrer">
+        {{ t('video.watch_on_youtube') }}
+      </a>
+    </p>
+    <form method="post" action="/exercises/{{ exercise.id }}/video/delete">
+      <button type="submit" class="linklike danger">{{ t('video.remove') }}</button>
+    </form>
+    {% else %}
+    <p class="lede">
+      {{ t('video.none') }}
+      <a href="{{ nippard_search_url }}" target="_blank" rel="noopener noreferrer">
+        {{ t('video.find_on_nippard') }}
+      </a>
+    </p>
+    <form method="post" action="/exercises/{{ exercise.id }}/video" class="stacked-form">
+      <label>
+        {{ t('video.url_label') }}
+        <input type="url" name="youtube" required
+               placeholder="https://www.youtube.com/watch?v=...">
+      </label>
+      <button type="submit" class="btn btn-primary">{{ t('video.save') }}</button>
+    </form>
+    {% endif %}
+  </section>
+
   <section class="guide">
     <h2>{{ t('guide.heading') }}</h2>
 
