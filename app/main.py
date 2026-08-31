@@ -12,6 +12,7 @@ from app.services.errors import ResourceNotFound
 from app.web.routes import (
     auth,
     exercises,
+    export,
     health,
     language,
     pages,
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(references.router)
     app.include_router(exercises.router)
     app.include_router(workouts.router)
+    app.include_router(export.router)
 
     return app
 

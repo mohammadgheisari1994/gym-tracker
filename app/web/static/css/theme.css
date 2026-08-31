@@ -146,6 +146,25 @@ a:hover {
   filter: brightness(1.05);
 }
 
+.btn-outline,
+.export-links .btn {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.btn-outline:hover,
+.export-links .btn:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+}
+
+.export-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   color: var(--text-muted);
