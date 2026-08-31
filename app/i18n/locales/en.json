@@ -7,6 +7,7 @@
   "nav.signup": "Sign up",
   "nav.logout": "Log out",
   "nav.dashboard": "Dashboard",
+  "nav.references": "References & attributions",
   "home.heading": "Your training log, done right",
   "home.body": "Log workouts, tag your sets, watch your estimated 1RM climb, and let the app write the form cues for you.",
   "home.cta": "Get started",
@@ -45,5 +46,18 @@
   "auth.error.current_password_wrong": "Your current password is incorrect.",
 
   "dashboard.welcome": "Welcome",
-  "dashboard.empty": "Workout tracking lands here next. For now, your account is ready."
+  "dashboard.empty": "Workout tracking lands here next. For now, your account is ready.",
+
+  "references.title": "References & attributions",
+  "references.intro": "gym-tracker's training guidance is grounded in peer-reviewed research and evidence-based coaching. Sources are cited, not reproduced; the full texts remain with their publishers.",
+  "references.open_link": "Open source",
+  "references.notice": "AI-generated exercise guides are original text with these works listed as further reading. They are educational and not a substitute for coaching or medical advice.",
+  "references.kind.position_stand": "Position stands",
+  "references.kind.paper": "Peer-reviewed research",
+  "references.kind.formula": "1RM estimation",
+  "references.kind.media": "Media",
+  "references.kind_note.position_stand": "Consensus guidelines from professional bodies.",
+  "references.kind_note.paper": "Systematic reviews and meta-analyses informing volume, frequency, rest, and intensity guidance.",
+  "references.kind_note.formula": "Equations behind the estimated one-rep-max feature.",
+  "references.kind_note.media": "Instructional videos are embedded via YouTube's official player and remain the property of their creators."
 }

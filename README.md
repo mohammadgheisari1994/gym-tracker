@@ -69,6 +69,13 @@ the signed-in user. Workout tracking is next.
 See [DEVELOPMENT_RULES.md](DEVELOPMENT_RULES.md) and
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## References & attributions
+
+Training guidance is grounded in cited, peer-reviewed research (see
+[`/references`](app/references/catalog.py) in-app). Instructional videos are
+embedded from YouTube — primarily [Jeff Nippard](https://www.youtube.com/@JeffNippard) —
+and never downloaded. Full third-party attributions are in [NOTICE](NOTICE).
+
 ## License
 
 [MIT](LICENSE)

@@ -67,6 +67,25 @@ conflict, the rule wins.
 - Double-check the PR number before merging (bots consume numbers too).
 - Never bypass branch protection.
 
-## 7. Keep this document current
+## 7. Attribution and citations
+
+- **Cite, do not copy.** Third-party text, figures, and tables are not
+  reproduced. Scientific works are referenced under normal academic practice;
+  full texts stay with their publishers.
+- **Verify every citation.** Before a reference is added to
+  `app/references/catalog.py`, its DOI is checked against Crossref (or, when
+  there is no DOI, a stable publisher/aggregator URL is used). No citation is
+  committed from memory.
+- **Videos are embedded, never downloaded.** Instructional videos play through
+  the provider's official embed. gym-tracker does not download, store, or
+  re-host video files.
+- **AI-generated content is original.** LLM-written guides are the model's own
+  text with catalogue works attached as further reading. Source transcripts or
+  article text are never fed in to be paraphrased. Every AI-generated guide
+  carries an "educational, not coaching or medical advice" disclaimer.
+- **Keep `NOTICE` current.** Any new bundled asset, cited body of work, or
+  embedded third-party media is recorded in `NOTICE` in the same PR.
+
+## 8. Keep this document current
 
 Whenever a rule changes or a new one is adopted, update this file in the same PR.

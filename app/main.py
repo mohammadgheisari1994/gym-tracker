@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import get_settings
-from app.web.routes import auth, health, language, pages
+from app.web.routes import auth, health, language, pages, references
 
 _STATIC_DIR = Path(__file__).parent / "web" / "static"
 
@@ -30,6 +30,7 @@ def create_app() -> FastAPI:
     app.include_router(pages.router)
     app.include_router(language.router)
     app.include_router(auth.router)
+    app.include_router(references.router)
 
     return app
 
