@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exercise.name }} · {{ t('progress.title') }}{% endblock %}
+
+{% block content %}
+<section class="stack-page">
+  <div class="page-head">
+    <div>
+      <h1>{{ exercise.name }}</h1>
+      <p class="muted">
+        {{ t('exercises.muscle.' ~ exercise.muscle_group.value) }} ·
+        {{ t('progress.title') }}
+      </p>
+    </div>
+    <a href="/exercises">&larr; {{ t('nav.exercises') }}</a>
+  </div>
+
+  {% if not points %}
+  <p class="lede">{{ t('progress.empty') }}</p>
+  {% else %}
+  <div class="chart-grid">
+    <figure class="chart-card">
+      <figcaption>
+        {{ t('progress.chart.strength') }} ({{ current_user.weight_unit.value }})
+      </figcaption>
+      <div class="chart-holder"><canvas id="chart-strength"></canvas></div>
+    </figure>
+    <figure class="chart-card">
+      <figcaption>{{ t('progress.chart.volume') }}</figcaption>
+      <div class="chart-holder"><canvas id="chart-volume"></canvas></div>
+    </figure>
+    <figure class="chart-card">
+      <figcaption>{{ t('progress.chart.reps') }}</figcaption>
+      <div class="chart-holder"><canvas id="chart-reps"></canvas></div>
+    </figure>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% if points %}
+<script id="exercise-data" type="application/json">{{ chart_data | tojson }}</script>
+<script src="{{ url_for('static', path='js/vendor/chart.umd.min.js') }}"></script>
+<script src="{{ url_for('static', path='js/charts.js') }}"></script>
+<script>
+  (function () {
+    var d = window.gymCharts && gymCharts.json("exercise-data");
+    if (!d) return;
+    var p = gymCharts.palette;
+    gymCharts.line("chart-strength", d.labels, [
+      {
+        label: {{ t('progress.series.top_weight') | tojson }},
+        data: d.topWeight, borderColor: p.series[0],
+        backgroundColor: "transparent", tension: 0.25,
+      },
+      {
+        label: {{ t('progress.series.e1rm') | tojson }},
+        data: d.estimatedOneRepMax, borderColor: p.series[1], borderDash: [5, 4],
+        backgroundColor: "transparent", tension: 0.25,
+      },
+    ]);
+    gymCharts.bar("chart-volume", d.labels,
+      {{ t('progress.chart.volume') | tojson }}, d.volume, p.series[2]);
+    gymCharts.line("chart-reps", d.labels, [
+      {
+        label: {{ t('progress.chart.reps') | tojson }},
+        data: d.reps, borderColor: p.series[3],
+        backgroundColor: "transparent", tension: 0.25,
+      },
+    ]);
+  })();
+</script>
+{% endif %}
+{% endblock %}

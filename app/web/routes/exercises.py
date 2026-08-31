@@ -5,6 +5,7 @@ from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
 from app.models import MuscleGroup
+from app.services.analytics import exercise_progress
 from app.services.errors import DuplicateExercise, ExerciseInUse
 from app.services.exercises import (
     create_exercise,
@@ -13,6 +14,7 @@ from app.services.exercises import (
     list_exercises,
     update_exercise,
 )
+from app.web.chartdata import exercise_chart_data
 from app.web.deps import DbSession, RequiredUser, set_flash
 from app.web.forms import ExerciseForm
 from app.web.templating import render
@@ -102,6 +104,18 @@ async def create(request: Request, session: DbSession, user: RequiredUser):
     session.commit()
     set_flash(request, "exercises.saved")
     return RedirectResponse(url="/exercises", status_code=303)
+
+
+@router.get("/{exercise_id}/progress")
+def progress(request: Request, session: DbSession, user: RequiredUser, exercise_id: int):
+    exercise = get_exercise(session, user, exercise_id)
+    points = exercise_progress(session, exercise)
+    return render(
+        request,
+        "exercises/progress.html",
+        {"exercise": exercise, "points": points, "chart_data": exercise_chart_data(points)},
+        user=user,
+    )
 
 
 @router.get("/{exercise_id}/edit")

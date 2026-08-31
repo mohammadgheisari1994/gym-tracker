@@ -3,8 +3,65 @@
 {% block title %}{{ t('nav.dashboard') }} · {{ t('app.name') }}{% endblock %}
 
 {% block content %}
-<section class="dashboard">
+<section class="stack-page">
   <h1>{{ t('dashboard.welcome') }}, {{ current_user.display_name }}</h1>
+
+  {% if not stats.has_data %}
   <p class="lede">{{ t('dashboard.empty') }}</p>
+  <a class="btn btn-primary" href="/workouts/new">{{ t('workouts.add') }}</a>
+  {% else %}
+  <p class="muted">{{ t('dashboard.window') }}</p>
+
+  <div class="stat-tiles">
+    <div class="stat-tile">
+      <span class="stat-value">{{ stats.total_workouts }}</span>
+      <span class="stat-label">{{ t('dashboard.stat.workouts') }}</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-value">
+        {{ '%g' % stats.total_volume }} {{ current_user.weight_unit.value }}
+      </span>
+      <span class="stat-label">{{ t('dashboard.stat.volume') }}</span>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <figure class="chart-card">
+      <figcaption>{{ t('dashboard.chart.weekly_volume') }}</figcaption>
+      <div class="chart-holder"><canvas id="chart-weekly-volume"></canvas></div>
+    </figure>
+    <figure class="chart-card">
+      <figcaption>{{ t('dashboard.chart.frequency') }}</figcaption>
+      <div class="chart-holder"><canvas id="chart-frequency"></canvas></div>
+    </figure>
+    {% if stats.muscle_distribution %}
+    <figure class="chart-card">
+      <figcaption>{{ t('dashboard.chart.muscle') }}</figcaption>
+      <div class="chart-holder"><canvas id="chart-muscle"></canvas></div>
+    </figure>
+    {% endif %}
+  </div>
+  {% endif %}
 </section>
+{% endblock %}
+
+{% block scripts %}
+{% if stats.has_data %}
+<script id="dashboard-data" type="application/json">{{ chart_data | tojson }}</script>
+<script src="{{ url_for('static', path='js/vendor/chart.umd.min.js') }}"></script>
+<script src="{{ url_for('static', path='js/charts.js') }}"></script>
+<script>
+  (function () {
+    var d = window.gymCharts && gymCharts.json("dashboard-data");
+    if (!d) return;
+    gymCharts.bar("chart-weekly-volume", d.weeklyVolume.labels,
+      {{ t('dashboard.chart.weekly_volume') | tojson }}, d.weeklyVolume.values);
+    gymCharts.bar("chart-frequency", d.weeklyFrequency.labels,
+      {{ t('dashboard.chart.frequency') | tojson }}, d.weeklyFrequency.values,
+      gymCharts.palette.series[1], { integer: true });
+    gymCharts.doughnut("chart-muscle", d.muscleDistribution.labels,
+      d.muscleDistribution.values);
+  })();
+</script>
+{% endif %}
 {% endblock %}

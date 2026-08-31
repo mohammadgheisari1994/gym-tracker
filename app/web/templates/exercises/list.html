@@ -23,6 +23,7 @@
         {% if exercise.notes %}<p class="card-row-note">{{ exercise.notes }}</p>{% endif %}
       </div>
       <div class="card-row-actions">
+        <a href="/exercises/{{ exercise.id }}/progress">{{ t('progress.link') }}</a>
         <a href="/exercises/{{ exercise.id }}/edit">{{ t('common.edit') }}</a>
         <form method="post" action="/exercises/{{ exercise.id }}/delete"
               onsubmit="return confirm('{{ t('exercises.delete_confirm') }}')">

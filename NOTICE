@@ -46,6 +46,9 @@ transcripts or article text.
 htmx 2.0.4 (vendored at app/web/static/js/vendor/htmx.min.js)
   https://htmx.org/  -  Zero-Clause BSD (0BSD)
 
+Chart.js 4.4.6 (vendored at app/web/static/js/vendor/chart.umd.min.js)
+  https://www.chartjs.org/  -  MIT License
+
 Runtime dependencies are declared in requirements.txt and requirements-dev.txt
 and retain their own licenses (FastAPI, Starlette, SQLAlchemy, Alembic,
 pydantic, uvicorn, psycopg, pwdlib, Jinja2 - all permissive MIT/BSD/Apache-2.0).

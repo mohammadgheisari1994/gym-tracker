@@ -58,7 +58,22 @@
   "auth.error.current_password_wrong": "گذرواژه فعلی شما نادرست است.",
 
   "dashboard.welcome": "خوش آمدی",
-  "dashboard.empty": "ثبت تمرین به‌زودی همین‌جا اضافه می‌شود. فعلاً حساب شما آماده است.",
+  "dashboard.empty": "برای دیدن پیشرفتت، یک تمرین ثبت کن.",
+  "dashboard.window": "۱۲ هفته اخیر",
+  "dashboard.stat.workouts": "تمرین‌ها",
+  "dashboard.stat.volume": "بار حجمی",
+  "dashboard.chart.weekly_volume": "بار حجمی هفتگی",
+  "dashboard.chart.frequency": "تعداد تمرین در هفته",
+  "dashboard.chart.muscle": "حجم به تفکیک گروه عضلانی",
+
+  "progress.title": "پیشرفت",
+  "progress.link": "پیشرفت",
+  "progress.empty": "هنوز ستی برای این حرکت ثبت نشده است.",
+  "progress.chart.strength": "بیشترین وزن و یک‌تکرار بیشینه تخمینی",
+  "progress.chart.volume": "بار حجمی",
+  "progress.chart.reps": "مجموع تکرارها",
+  "progress.series.top_weight": "بیشترین وزن",
+  "progress.series.e1rm": "یک‌تکرار بیشینه تخمینی (اپلی)",
 
   "exercises.title": "حرکات",
   "exercises.add": "افزودن حرکت",

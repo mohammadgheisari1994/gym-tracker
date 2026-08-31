@@ -58,7 +58,22 @@
   "auth.error.current_password_wrong": "Your current password is incorrect.",
 
   "dashboard.welcome": "Welcome",
-  "dashboard.empty": "Workout tracking lands here next. For now, your account is ready.",
+  "dashboard.empty": "Log a workout to start seeing your progress here.",
+  "dashboard.window": "Last 12 weeks",
+  "dashboard.stat.workouts": "Workouts",
+  "dashboard.stat.volume": "Volume load",
+  "dashboard.chart.weekly_volume": "Weekly volume load",
+  "dashboard.chart.frequency": "Workouts per week",
+  "dashboard.chart.muscle": "Volume by muscle group",
+
+  "progress.title": "Progress",
+  "progress.link": "Progress",
+  "progress.empty": "No sets logged for this exercise yet.",
+  "progress.chart.strength": "Top weight & estimated 1RM",
+  "progress.chart.volume": "Volume load",
+  "progress.chart.reps": "Total reps",
+  "progress.series.top_weight": "Top weight",
+  "progress.series.e1rm": "Estimated 1RM (Epley)",
 
   "exercises.title": "Exercises",
   "exercises.add": "Add exercise",
