@@ -9,6 +9,7 @@ from starlette.responses import Response
 from app.config import get_settings
 from app.database import get_session
 from app.i18n import normalize_language
+from app.llm import LLMProvider, get_provider
 from app.models import User
 from app.services.auth import get_user_by_id
 
@@ -69,3 +70,11 @@ def require_user(user: CurrentUser) -> User:
 
 
 RequiredUser = Annotated[User, Depends(require_user)]
+
+
+def get_llm_provider() -> LLMProvider:
+    """Injectable so tests can substitute a fake provider."""
+    return get_provider()
+
+
+LLMProviderDep = Annotated[LLMProvider, Depends(get_llm_provider)]

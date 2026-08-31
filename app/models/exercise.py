@@ -2,7 +2,7 @@
 
 from enum import StrEnum
 
-from sqlalchemy import Enum, ForeignKey, Index, String, func, text
+from sqlalchemy import JSON, Enum, ForeignKey, Index, String, Text, func, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
@@ -43,6 +43,28 @@ class Exercise(TimestampMixin, Base):
     notes: Mapped[str | None] = mapped_column(String(2000))
 
     user: Mapped["object"] = relationship("User")
+    guide: Mapped["ExerciseGuide | None"] = relationship(
+        back_populates="exercise",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+
+
+class ExerciseGuide(TimestampMixin, Base):
+    """An LLM-generated execution guide, cached permanently per exercise."""
+
+    __tablename__ = "exercise_guides"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    exercise_id: Mapped[int] = mapped_column(
+        ForeignKey("exercises.id", ondelete="CASCADE"), unique=True
+    )
+    body: Mapped[str] = mapped_column(Text)
+    source_slugs: Mapped[list[str]] = mapped_column(JSON, default=list)
+    provider: Mapped[str] = mapped_column(String(40))
+    model: Mapped[str] = mapped_column(String(120))
+
+    exercise: Mapped[Exercise] = relationship(back_populates="guide")
 
 
 # Case-insensitive uniqueness of an exercise name within one user's catalogue.

@@ -83,6 +83,10 @@ conflict, the rule wins.
   text with catalogue works attached as further reading. Source transcripts or
   article text are never fed in to be paraphrased. Every AI-generated guide
   carries an "educational, not coaching or medical advice" disclaimer.
+- **The user never writes a prompt.** Every prompt is built by the service
+  layer from the app's own data. LLM features are opt-in per deployment
+  (`LLM_PROVIDER`) and off by default; with no provider the app makes no
+  external calls.
 - **Keep `NOTICE` current.** Any new bundled asset, cited body of work, or
   embedded third-party media is recorded in `NOTICE` in the same PR.
 

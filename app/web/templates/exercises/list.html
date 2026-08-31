@@ -16,7 +16,7 @@
     {% for exercise in exercises %}
     <li class="card-row">
       <div class="card-row-main">
-        <span class="card-row-title">{{ exercise.name }}</span>
+        <a class="card-row-title" href="/exercises/{{ exercise.id }}">{{ exercise.name }}</a>
         <span class="badge badge-muscle">
           {{ t('exercises.muscle.' ~ exercise.muscle_group.value) }}
         </span>
