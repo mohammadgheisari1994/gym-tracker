@@ -62,9 +62,9 @@ LLM sections show a plain "unavailable" notice.
 
 ## Deployment
 
-`render.yaml` is a Render Blueprint: a free web service plus a free PostgreSQL
-database. Connect the repository in the Render dashboard to deploy; add the
-`LLM_*` variables there if you want the AI features.
+`render.yaml` is a Render Blueprint for a free web service, backed by an
+external free [Neon](https://neon.tech) PostgreSQL database. See
+[DEPLOY.md](DEPLOY.md) for the step-by-step.
 
 ## Project layout
 
